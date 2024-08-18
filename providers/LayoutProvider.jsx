@@ -2,19 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import { fetchUsers } from "@/app/(auth)/actions/fetchUsers";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-function LayoutProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function LayoutProvider({ children }) {
   const pathname = usePathname();
-  const isPublicRoute = ["sign-in", "sign-up"].includes(
-    pathname.split("/")[1]
-  );
+  const isPublicRoute = ["sign-in", "sign-up"].includes(pathname.split("/")[1]);
 
   const getNavbar = () => {
     if (isPublicRoute) return null;
@@ -33,9 +27,8 @@ function LayoutProvider({
 
   const getCurrentUser = async () => {
     try {
-      const response: any = await fetchUsers();
-      if (response.error)
-        throw new Error(response.error.message);
+      const response = await fetchUsers();
+      if (response.error) throw new Error(response.error.message);
     } catch (error) {
       console.log(error);
     } finally {
