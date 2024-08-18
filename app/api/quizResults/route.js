@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
   const body = await req.json();
-  const { userId, quizScore, correctAnswers, wrongAnswers } = body;
+  const { userId, correctAnswers, wrongAnswers } = body;
 
   try {
     let existingUser = await prisma.user.findUnique({
@@ -18,7 +18,6 @@ export async function POST(req) {
       const updatedUserStats = await prisma.quizResult.update({
         where: { id: existingUser.quizResults[0].id },
         data: {
-          quizScore: existingUser.quizResults[0].quizScore + quizScore,
           correctAnswers:
             existingUser.quizResults[0].correctAnswers + correctAnswers,
           wrongAnswers: existingUser.quizResults[0].wrongAnswers + wrongAnswers,
@@ -31,7 +30,6 @@ export async function POST(req) {
         data: {
           quizResults: {
             create: {
-              quizScore: quizScore,
               correctAnswers: correctAnswers,
               wrongAnswers: wrongAnswers,
             },

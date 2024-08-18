@@ -1,5 +1,6 @@
-import questions from "./questions";
+import airlaw from "./schemas/airlaw";
+import generalKnowledge from "./schemas/gk";
 
 export const schema = {
-  types: [questions],
+  types: [airlaw, generalKnowledge],
 };

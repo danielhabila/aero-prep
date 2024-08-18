@@ -9,8 +9,11 @@ const raleway = Raleway({
 });
 
 export const metadata = {
-  title: "CodeQuiz",
-  description: "Weekly quiz question for developers",
+  title: "PrepMe",
+  description: "Pass your TC exams with ease",
+  icons: {
+    icon: "/prepMeFavicon.png",
+  },
 };
 
 export default function RootLayout({ children }) {

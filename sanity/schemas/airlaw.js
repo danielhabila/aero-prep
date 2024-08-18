@@ -1,6 +1,6 @@
 export default {
-  name: "questions",
-  title: "Questions",
+  name: "airlaw",
+  title: "Airlaw",
   type: "document",
   fields: [
     {
@@ -22,7 +22,8 @@ export default {
     {
       name: "explanation",
       title: "Explanation",
-      type: "string",
+      type: "array",
+      of: [{ type: "block" }],
     },
     {
       name: "image",
