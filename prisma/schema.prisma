@@ -14,16 +14,13 @@ model User {
   profilePic  String
   clerkUserId String       @unique
   createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
   quizResults QuizResult[]
 }
 
 model QuizResult {
-  id             String   @id @default(cuid()) @map("_id")
-  user           User     @relation(fields: [userId], references: [id])
-  userId         String
-  quizScore      Int
-  correctAnswers Int
-  wrongAnswers   Int
-  createdAt      DateTime @default(now())
+  id        String   @id @default(cuid()) @map("_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  results   Json
+  createdAt DateTime @default(now())
 }

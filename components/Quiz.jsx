@@ -2,40 +2,51 @@
 import { useState, useEffect } from "react";
 import StatCard from "./StatCard";
 
-const Quiz = ({ questions, userId }) => {
+export default function Quiz({ questions, userId }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [checked, setChecked] = useState(false);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState({
     correctAnswers: 0,
     wrongAnswers: 0,
-    answers: Array(questions.length).fill(null), // Initialize with null for each question
+    answers: Array(questions.length).fill(null),
   });
 
-  const { question, answers, correctAnswer } = questions[activeQuestion];
+  useEffect(() => {
+    console.log("Active Question:", activeQuestion);
+    console.log("Selected Answer:", selectedAnswer);
+    console.log("Selected Answer Index:", selectedAnswerIndex);
+    console.log("Show Results:", showResults);
+    console.log("Results:", results);
+    console.log("userId", userId);
+  }, [
+    activeQuestion,
+    selectedAnswer,
+    selectedAnswerIndex,
+    showResults,
+    results,
+  ]);
 
   useEffect(() => {
     const currentAnswer = results.answers[activeQuestion];
+    console.log("currentAnswer", currentAnswer);
     if (currentAnswer) {
       setSelectedAnswer(currentAnswer.selectedAnswer);
       setSelectedAnswerIndex(
-        answers.findIndex((answer) => answer === currentAnswer.selectedAnswer)
+        questions[activeQuestion].answers.findIndex(
+          (answer) => answer === currentAnswer.selectedAnswer
+        )
       );
-      setChecked(true);
     } else {
       setSelectedAnswer("");
       setSelectedAnswerIndex(null);
-      setChecked(false);
     }
-  }, [activeQuestion, results.answers, answers]);
+  }, [activeQuestion, results.answers, questions]);
 
   const onAnswerSelected = (answer, idx) => {
-    setChecked(true);
     setSelectedAnswerIndex(idx);
     setSelectedAnswer(answer);
-
     setResults((prev) => {
       const updatedAnswers = [...prev.answers];
       updatedAnswers[activeQuestion] = {
@@ -43,17 +54,14 @@ const Quiz = ({ questions, userId }) => {
         selectedAnswer: answer,
         correctAnswer: questions[activeQuestion].correctAnswer,
       };
-
-      return {
-        ...prev,
-        answers: updatedAnswers,
-      };
+      return { ...prev, answers: updatedAnswers };
     });
   };
 
-  const nextQuestion = () => {
+  const gradeCurrentQuestion = () => {
     setResults((prev) => {
-      const isCorrect = selectedAnswer === correctAnswer;
+      const isCorrect =
+        selectedAnswer === questions[activeQuestion].correctAnswer;
       return {
         ...prev,
         correctAnswers: isCorrect
@@ -62,57 +70,71 @@ const Quiz = ({ questions, userId }) => {
         wrongAnswers: !isCorrect ? prev.wrongAnswers + 1 : prev.wrongAnswers,
       };
     });
+  };
 
-    setSelectedAnswerIndex(null);
-    setSelectedAnswer("");
-    setChecked(false);
-
-    if (activeQuestion !== questions.length - 1) {
+  const nextQuestion = () => {
+    gradeCurrentQuestion();
+    if (activeQuestion < questions.length - 1) {
       setActiveQuestion((prev) => prev + 1);
     } else {
-      setShowResults(true);
-      fetch("/api/quizResults", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-          correctAnswers: results.correctAnswers,
-          wrongAnswers: results.wrongAnswers,
-          answers: results.answers,
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not working fam");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Quiz results saved successfully:", data);
-        })
-        .catch((error) => {
-          console.error("Error saving quiz results:", error);
-        });
+      submitQuiz();
     }
+  };
+
+  const submitQuiz = () => {
+    const finalResults = questions.reduce(
+      (acc, question, idx) => {
+        const userAnswer = results.answers[idx]?.selectedAnswer;
+        if (userAnswer === question.correctAnswer) {
+          acc.correctAnswers += 1;
+        } else {
+          acc.wrongAnswers += 1;
+        }
+        return acc;
+      },
+      { correctAnswers: 0, wrongAnswers: 0 }
+    );
+
+    setResults((prev) => ({
+      ...prev,
+      correctAnswers: finalResults.correctAnswers,
+      wrongAnswers: finalResults.wrongAnswers,
+    }));
+
+    setShowResults(true);
+
+    fetch("/api/quizResults", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, results }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
+      })
+      .then((data) => console.log("Quiz results saved successfully:", data))
+      .catch((error) => console.error("Error saving quiz results:", error));
   };
 
   const previousQuestion = () => {
-    if (activeQuestion > 0) {
-      setActiveQuestion((prev) => prev - 1);
-      setSelectedAnswerIndex(null);
-      setChecked(false);
-    }
+    if (activeQuestion > 0) setActiveQuestion((prev) => prev - 1);
   };
 
-  const goToQuestion = (index) => {
-    setActiveQuestion(index);
-  };
+  const goToQuestion = (index) => setActiveQuestion(index);
 
   return (
-    <div className="min-h-[500px] ">
+    <div className="min-h-[500px]">
       <div className="max-w-6xl px-4 sm:px-6 mx-auto flex justify-center py-10 flex-col">
+        <div className="flex justify-end">
+          {!showResults && (
+            <button
+              onClick={submitQuiz}
+              className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg mr-2 w-fit"
+            >
+              Submit
+            </button>
+          )}
+        </div>
         {!showResults ? (
           <>
             <div className="flex justify-start mb-10 w-fit bg-blue-700 text-white px-4 rounded-md py-1 text-lg font-medium md:hidden">
@@ -121,7 +143,6 @@ const Quiz = ({ questions, userId }) => {
                 <span>/{questions.length}</span>
               </h2>
             </div>
-
             <div className="hidden md:flex justify-center mb-10">
               {questions.map((_, idx) => (
                 <button
@@ -139,32 +160,31 @@ const Quiz = ({ questions, userId }) => {
                 </button>
               ))}
             </div>
-
             <div>
-              <h3 className="mb-5 text-2xl font-bold">{question}</h3>
+              <h3 className="mb-5 text-2xl font-bold">
+                {questions[activeQuestion].question}
+              </h3>
               <ul>
-                {answers.map((answer, idx) => (
+                {questions[activeQuestion].answers.map((answer, idx) => (
                   <li
                     key={idx}
                     onClick={() => onAnswerSelected(answer, idx)}
-                    className={`cursor-pointer tracking-wide font-medium mb-5 py-3 rounded-md border border-gray-700 hover:bg-gray-600 hover:text-white px-8
-                    ${selectedAnswerIndex === idx && "bg-light text-dark"}
-                    `}
+                    className={`cursor-pointer tracking-wide font-medium mb-5 py-3 rounded-md border border-gray-700 hover:bg-gray-600 hover:text-white px-8 ${
+                      selectedAnswerIndex === idx && "bg-light text-dark"
+                    }`}
                   >
                     <span>{answer}</span>
                   </li>
                 ))}
               </ul>
-              <div className="flex justify-between ">
-                {activeQuestion > 0 ? (
+              <div className="flex justify-between">
+                {activeQuestion > 0 && (
                   <button
                     onClick={previousQuestion}
                     className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg"
                   >
                     ← Previous
                   </button>
-                ) : (
-                  <div></div>
                 )}
                 <button
                   onClick={nextQuestion}
@@ -193,7 +213,10 @@ const Quiz = ({ questions, userId }) => {
                 title="Correct Answers"
                 value={results.correctAnswers}
               />
-              <StatCard title="Wrong Answers" value={results.wrongAnswers} />
+              <StatCard
+                title="Wrong Answers / Unanswered"
+                value={results.wrongAnswers}
+              />
             </div>
             <div className="mt-10">
               <div className="flex justify-center">
@@ -213,7 +236,8 @@ const Quiz = ({ questions, userId }) => {
               </div>
               <div>
                 <p className="font-bold text-xl mb-5">
-                  {results.answers[activeQuestion]?.question || question}
+                  {results.answers[activeQuestion]?.question ||
+                    questions[activeQuestion].question}
                 </p>
                 <ul>
                   {questions[activeQuestion].answers.map((answer, idx) => (
@@ -245,6 +269,4 @@ const Quiz = ({ questions, userId }) => {
       </div>
     </div>
   );
-};
-
-export default Quiz;
+}

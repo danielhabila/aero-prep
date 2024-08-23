@@ -3,9 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
   const body = await req.json();
-  const { userId, correctAnswers, wrongAnswers } = body;
+  const { userId, results } = body;
 
   try {
+    console.log("userId", userId);
     let existingUser = await prisma.user.findUnique({
       where: { id: userId },
       include: { quizResults: true },

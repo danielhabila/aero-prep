@@ -18,8 +18,10 @@ async function getData() {
 
 const page = async () => {
   const questions = await getData();
-  const user = await fetchUsers();
-  const userId = user?.data.user.id;
+  // console.log("questions", questions);
+  const userId = await fetchUsers();
+  console.log("userId", userId);
+
   return (
     <>
       <Quiz questions={questions} userId={userId} />

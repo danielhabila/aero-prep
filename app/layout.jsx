@@ -2,6 +2,7 @@ import { Raleway } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import LayoutProvider from "@/providers/LayoutProvider";
+import { auth } from "@clerk/nextjs/server";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -17,6 +18,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const { userId } = auth();
+  console.log("userId", userId);
   return (
     <ClerkProvider>
       <html lang="en">
