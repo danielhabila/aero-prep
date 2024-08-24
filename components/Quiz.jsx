@@ -92,7 +92,7 @@ export default function Quiz({ questions, email }) {
         }
         return acc;
       },
-      { correctAnswers: 0, wrongAnswers: 0 }
+      { correctAnswers: 0, wrongAnswers: 0, answers: results.answers }
     );
 
     setResults((prev) => ({
@@ -104,7 +104,10 @@ export default function Quiz({ questions, email }) {
     setShowResults(true);
 
     try {
-      const response = await axios.post("/api/quizResults", { results });
+      const response = await axios.post("/api/quizResults", {
+        results: finalResults,
+        email,
+      });
       if (response.status !== 200)
         throw new Error("Network response was not ok");
 

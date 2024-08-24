@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
   const body = await req.json();
-  const { results } = body;
+  const { results, email } = body;
 
   try {
     const findUser = await prisma.user.findUnique({
-      where: { email: "johanoumar1@gmail.com" },
+      where: { email: email },
     });
 
     if (findUser) {
