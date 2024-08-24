@@ -1,8 +1,8 @@
 import { Raleway } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
-import LayoutProvider from "@/providers/LayoutProvider";
-import { auth } from "@clerk/nextjs/server";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -18,15 +18,17 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const { userId } = auth();
-  console.log("userId", userId);
   return (
-    <ClerkProvider>
+    <UserProvider>
       <html lang="en">
-        <body className={`${raleway.className} min-h-screen`}>
-          <LayoutProvider>{children}</LayoutProvider>
+        <body
+          className={`${raleway.className} min-h-screen flex flexCol justify-between`}
+        >
+          <Navbar />
+          {children}
+          <Footer />
         </body>
       </html>
-    </ClerkProvider>
+    </UserProvider>
   );
 }

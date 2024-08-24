@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import StatCard from "./StatCard";
+import axios from "axios";
 
-export default function Quiz({ questions, userId }) {
+export default function Quiz({ questions, email }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
@@ -19,7 +20,6 @@ export default function Quiz({ questions, userId }) {
     console.log("Selected Answer Index:", selectedAnswerIndex);
     console.log("Show Results:", showResults);
     console.log("Results:", results);
-    console.log("userId", userId);
   }, [
     activeQuestion,
     selectedAnswer,
@@ -81,7 +81,7 @@ export default function Quiz({ questions, userId }) {
     }
   };
 
-  const submitQuiz = () => {
+  const submitQuiz = async () => {
     const finalResults = questions.reduce(
       (acc, question, idx) => {
         const userAnswer = results.answers[idx]?.selectedAnswer;
@@ -103,17 +103,15 @@ export default function Quiz({ questions, userId }) {
 
     setShowResults(true);
 
-    fetch("/api/quizResults", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, results }),
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Network response was not ok");
-        return response.json();
-      })
-      .then((data) => console.log("Quiz results saved successfully:", data))
-      .catch((error) => console.error("Error saving quiz results:", error));
+    try {
+      const response = await axios.post("/api/quizResults", { results });
+      if (response.status !== 200)
+        throw new Error("Network response was not ok");
+
+      console.log("Quiz results saved successfully:", response.data);
+    } catch (error) {
+      console.error("Error saving quiz results:", error);
+    }
   };
 
   const previousQuestion = () => {

@@ -1,6 +1,7 @@
+import Loader from "@/components/Loader";
 import Quiz from "@/components/Quiz";
 import { client } from "@/sanity/lib/client";
-import { fetchUsers } from "../(auth)/actions/fetchUsers";
+import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 export const dynamic = "force-dynamic";
 
@@ -12,21 +13,21 @@ async function getData() {
   }`;
 
   const data = await client.fetch(query);
-
   return data;
 }
 
-const page = async () => {
-  const questions = await getData();
-  // console.log("questions", questions);
-  const userId = await fetchUsers();
-  console.log("userId", userId);
+const page = withPageAuthRequired(
+  async () => {
+    const questions = await getData();
+    const { user } = await getSession();
 
-  return (
-    <>
-      <Quiz questions={questions} userId={userId} />
-    </>
-  );
-};
+    return (
+      <>
+        <Quiz questions={questions} email={user.email} />
+      </>
+    );
+  },
+  { returnTo: "/quiz" }
+);
 
 export default page;

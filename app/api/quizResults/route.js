@@ -3,44 +3,45 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
   const body = await req.json();
-  const { userId, results } = body;
+  const { results } = body;
 
   try {
-    console.log("userId", userId);
-    let existingUser = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { quizResults: true },
+    const findUser = await prisma.user.findUnique({
+      where: { email: "johanoumar1@gmail.com" },
     });
-    if (
-      existingUser &&
-      existingUser.quizResults &&
-      existingUser.quizResults.length > 0
-    ) {
-      const updatedUserStats = await prisma.quizResult.update({
-        where: { id: existingUser.quizResults[0].id },
+
+    if (findUser) {
+      let updatedResults = findUser.quizResults || [];
+
+      if (updatedResults.length >= 10) {
+        // Remove the oldest result
+        updatedResults.shift();
+      }
+
+      // Add the new result
+      updatedResults.push(results);
+
+      // Update the user with the new results array
+      await prisma.user.update({
+        where: { email: findUser.email },
         data: {
-          correctAnswers:
-            existingUser.quizResults[0].correctAnswers + correctAnswers,
-          wrongAnswers: existingUser.quizResults[0].wrongAnswers + wrongAnswers,
+          quizResults: updatedResults,
         },
       });
-      return NextResponse.json({ updatedUserStats });
     } else {
-      const newUser = await prisma.user.update({
-        where: { id: userId },
-        data: {
-          quizResults: {
-            create: {
-              correctAnswers: correctAnswers,
-              wrongAnswers: wrongAnswers,
-            },
-          },
-        },
-      });
-      return NextResponse.json({ newUser });
+      // Handle case where user is not found
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+
+    return NextResponse.json(
+      { message: "Quiz result saved successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
-    return;
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

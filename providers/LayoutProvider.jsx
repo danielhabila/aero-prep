@@ -21,7 +21,7 @@ function LayoutProvider({ children }) {
   };
 
   const getContent = () => {
-    if (isPublicRoute) return null;
+    // if (isPublicRoute) return null;
     return <>{children}</>;
   };
 
