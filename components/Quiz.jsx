@@ -8,6 +8,7 @@ export default function Quiz({ questions, email }) {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [quizStartTime, setQuizStartTime] = useState(null);
   const [results, setResults] = useState({
     correctAnswers: 0,
     wrongAnswers: 0,
@@ -43,6 +44,11 @@ export default function Quiz({ questions, email }) {
       setSelectedAnswerIndex(null);
     }
   }, [activeQuestion, results.answers, questions]);
+
+  useEffect(() => {
+    // Set the quiz start time when the component mounts
+    setQuizStartTime(new Date().toISOString());
+  }, []);
 
   const onAnswerSelected = (answer, idx) => {
     setSelectedAnswerIndex(idx);
@@ -92,7 +98,20 @@ export default function Quiz({ questions, email }) {
         }
         return acc;
       },
-      { correctAnswers: 0, wrongAnswers: 0, answers: results.answers }
+      {
+        correctAnswers: 0,
+        wrongAnswers: 0,
+        answers: results.answers,
+        startTime: quizStartTime,
+        examType: "Complete Exam - PPAER",
+        numberOfQuestions: questions.length,
+        scorePercentage: 0, // We'll calculate this after counting correct answers
+      }
+    );
+
+    // Calculate score percentage
+    finalResults.scorePercentage = Math.floor(
+      (finalResults.correctAnswers / questions.length) * 100
     );
 
     setResults((prev) => ({

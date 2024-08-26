@@ -1,31 +1,14 @@
-import StatCard from "@/components/StatCard";
+import StatList from "@/components/StatList";
 
 const page = async () => {
   return (
     <div className="py-20">
-      <div className="text-center mb-10 text-2xl uppercase">
+      <div className="text-center mb-10 text-2xl uppercase font-bold">
         <h1>My Stats 📊</h1>
       </div>
-      {/* <div className="max-w-[1500px] mx-auto w-[90%] grid sm:grid-cols-3 gap-10 justify-center">
-        <StatCard
-          title="Total Points"
-          value={
-            currentUser?.data?.quizResults[0].quizScore
-          }
-        />
-        <StatCard
-          title="Correct Answers"
-          value={
-            currentUser?.data?.quizResults[0].correctAnswers
-          }
-        />
-        <StatCard
-          title="Wrong Answers"
-          value={
-            currentUser?.data?.quizResults[0].wrongAnswers
-          }
-        />
-      </div> */}
+      <div className=" ">
+        <StatList />
+      </div>
     </div>
   );
 };
