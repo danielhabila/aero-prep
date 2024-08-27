@@ -19,16 +19,16 @@ const Navbar = () => {
         });
 
         if (response.status === 200) {
-          alert("Welcome back");
+          // alert("Welcome back");
         } else if (response.status === 201) {
-          alert("Welcome new user");
+          // alert("Welcome new user");
         } else if (response.status === 500) {
-          alert("Something went wrong server side, please try again.");
+          alert("Something went wrong server side, please report issue.");
         } else {
           throw new Error(response.data.message || "Login failed");
         }
       } catch (error) {
-        alert("Something went wrong, please try again.");
+        alert("Something went wrong, please report issue.");
         console.log(error.message);
       }
     };
@@ -44,14 +44,14 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 md:h-18 ">
           <div>
             <Link href={"/"} className="flex gap-1 items-center text-xl">
-              <Image src={logo} alt="Prep Me" width={38} height={38} />
+              <Image src={logo} alt="Prep Me" className="w-9 md:w-10" />
             </Link>
           </div>
 
           <div className="flex items-center gap-3 justify-end">
             {user && (
               <Link
-                className="text-white font-medium mr-2 underline"
+                className="text-white font-semibold mr-2 hover:underline"
                 href="/stats"
               >
                 My Stats
@@ -60,7 +60,7 @@ const Navbar = () => {
             {/* <UserButton /> */}
 
             <ul className="flex grow justify-end flex-wrap items-center">
-              <li className="ml-3 sm:ml-6 inline ">
+              <li>
                 {!user ? (
                   <a
                     className="rounded-full px-4 py-1 inline-flex items-center bg-white font-medium hover:bg-white/80 group text-black"
@@ -72,20 +72,12 @@ const Navbar = () => {
                     </span>
                   </a>
                 ) : (
-                  <div className="flex grow justify-end flex-wrap items-center">
-                    <Link
-                      className="text-white font-medium text-sm hover:underline"
-                      href="/account"
-                    >
-                      {user.nickname}
-                    </Link>
-                    <a
-                      className="px-4 py-1 ml-4 rounded-full inline-flex items-center text-black font-medium bg-white hover:bg-white/80 group"
-                      href="/api/auth/logout"
-                    >
-                      Logout!
-                    </a>
-                  </div>
+                  <a
+                    className="px-4 py-1 rounded-full inline-flex items-center text-black font-medium bg-white hover:bg-white/80 group"
+                    href="/api/auth/logout"
+                  >
+                    Logout!
+                  </a>
                 )}
               </li>
             </ul>

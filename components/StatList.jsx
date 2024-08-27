@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import StatItem from "@/components/StatItem.jsx";
 import axios from "axios";
 import Loader from "@/components/Loader.jsx";
-import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function StatList() {
@@ -53,12 +52,7 @@ export default function StatList() {
             {quizResults &&
               quizResults.map((quizResult, index) => (
                 <div className="py-1.5" key={index}>
-                  <StatItem
-                    examType={quizResult.examType}
-                    startTime={quizResult.startTime}
-                    numberOfQuestions={quizResult.numberOfQuestions}
-                    scorePercentage={quizResult.scorePercentage}
-                  />
+                  <StatItem quizResult={quizResult} />
                 </div>
               ))}
           </div>
