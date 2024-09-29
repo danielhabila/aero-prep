@@ -1,9 +1,8 @@
 import { Raleway } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import FeedbackButton from "@/components/FeedbackButton";
+import LayoutProvider from "./providers/LayoutProvider";
+
 const raleway = Raleway({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "900"],
@@ -24,10 +23,7 @@ export default function RootLayout({ children }) {
         <body
           className={`${raleway.className} min-h-screen flex flexCol justify-between`}
         >
-          <FeedbackButton />
-          <Navbar />
-          {children}
-          <Footer />
+          <LayoutProvider>{children}</LayoutProvider>
         </body>
       </html>
     </UserProvider>

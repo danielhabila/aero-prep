@@ -6,9 +6,11 @@ import logo from "../public/images/prepMeWhite2.png";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useEffect } from "react";
 import axios from "axios";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const { user, isLoading } = useUser();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleCheckUserDB = async () => {
@@ -39,7 +41,9 @@ const Navbar = () => {
   }, [user, isLoading]);
 
   return (
-    <header className="relative w-full z-30 mt-6 md:bg-black/50">
+    <header
+      className={`w-full z-30 mt-6 md:bg-black/50 ${pathname === "/" ? "absolute" : "relative"}`}
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 md:h-18 ">
           <div>

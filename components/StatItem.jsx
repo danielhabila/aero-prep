@@ -6,6 +6,7 @@ import {
 } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import StatCard from "./StatCard";
+import { PortableText } from "@portabletext/react";
 
 export default function StatItem({ quizResult }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
@@ -153,6 +154,18 @@ export default function StatItem({ quizResult }) {
                       )
                     )}
                   </ul>
+                  {quizResult.questions &&
+                    quizResult.questions[activeQuestion] &&
+                    quizResult.questions[activeQuestion].explanation && (
+                      <div className="mt-4 text-left">
+                        <h4 className="font-bold mb-2">Explanation:</h4>
+                        <PortableText
+                          value={
+                            quizResult.questions[activeQuestion].explanation
+                          }
+                        />
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

@@ -2,8 +2,9 @@
 import { useState, useEffect } from "react";
 import StatCard from "./StatCard";
 import axios from "axios";
+import { PortableText } from "@portabletext/react";
 
-export default function Quiz({ questions, email }) {
+export default function QuizComponent({ questions, email, quizType }) {
   // State management
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
@@ -70,7 +71,8 @@ export default function Quiz({ questions, email }) {
     const finalResults = {
       ...results,
       startTime: quizStartTime,
-      examType: "Complete Exam - PPAER",
+      examType:
+        quizType === "pstar" ? "Complete Exam - PSTAR" : "Complete Exam - PPL",
       numberOfQuestions: questions.length,
       scorePercentage: Math.floor(
         (results.correctAnswers / questions.length) * 100
@@ -79,6 +81,7 @@ export default function Quiz({ questions, email }) {
         question: q.question,
         answers: q.answers,
         correctAnswer: q.correctAnswer,
+        explanation: q.explanation,
         selectedAnswer: results.answers[index]?.selectedAnswer || null,
       })),
     };
@@ -105,12 +108,12 @@ export default function Quiz({ questions, email }) {
 
   // Render functions
   const renderQuestionNavigation = () => (
-    <div className="hidden md:flex justify-center mb-10">
+    <div className="hidden mb-10 md:flex md:flex-wrap md:gap-1">
       {questions.map((_, idx) => (
         <button
           key={idx}
           onClick={() => goToQuestion(idx)}
-          className={`mx-1 px-3 py-1 rounded-full ${
+          className={`m-0.5 h-10 w-10 rounded-full ${
             idx === activeQuestion
               ? "bg-blue-700 border-2 border-ring"
               : results.answers[idx]
@@ -177,12 +180,12 @@ export default function Quiz({ questions, email }) {
         />
       </div>
       <div className="mt-10">
-        <div className="flex justify-center">
+        <div className="flex flex-wrap gap-2 mb-10">
           {results.answers.map((result, idx) => (
             <button
               key={idx}
               onClick={() => goToQuestion(idx)}
-              className={`mx-1 px-3 py-1 rounded-full mb-10 ${
+              className={`mm-0.5 h-10 w-10 rounded-full ${
                 result && result.selectedAnswer === result.correctAnswer
                   ? "bg-green-500"
                   : "bg-red-500"
@@ -213,6 +216,12 @@ export default function Quiz({ questions, email }) {
               </li>
             ))}
           </ul>
+          {questions[activeQuestion].explanation && (
+            <div className="mt-4 text-left">
+              <h4 className="font-bold mb-2">Explanation:</h4>
+              <PortableText value={questions[activeQuestion].explanation} />
+            </div>
+          )}
         </div>
       </div>
       <button

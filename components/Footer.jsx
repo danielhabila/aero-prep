@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <>
       <footer className="relative border-t border-white/10">
-        <div className="flex items-center justify-between mx-auto max-w-6xl px-4 sm:px-6 py-8">
+        <div className="flex items-center justify-between mx-auto max-w-6xl px-4 sm:px-6 py-14">
           <div className="flex items-center">
             {/* <a
               href="https://www.instagram.com/flightlevel.fyi"

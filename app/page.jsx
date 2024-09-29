@@ -1,13 +1,12 @@
 import Hero from "@/components/Hero";
-import { getSession } from "@auth0/nextjs-auth0";
-
+import Testimonials from "@/components/Testimonials";
+import Pricing from "@/components/Pricing";
 const Home = () => {
-  const { user } = getSession();
-  // console.log("user", user);
   return (
     <>
       <Hero />
-      <div>{user?.name}</div>
+      <Pricing />
+      <Testimonials />
     </>
   );
 };

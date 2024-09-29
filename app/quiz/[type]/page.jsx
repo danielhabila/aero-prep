@@ -1,30 +1,33 @@
 import Loader from "@/components/Loader";
-import Quiz from "@/components/Quiz";
+import QuizComponent from "@/components/QuizComponent";
 import { client } from "@/sanity/lib/client";
 import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
 import axios from "axios";
 
 export const dynamic = "force-dynamic";
 
-async function getData() {
-  const query = `*[_type == "airlaw"]{
+async function getData(type, count = 50) {
+  const query = `*[_type == "${type}"] {
     question,
     answers,
-    correctAnswer
+    correctAnswer,
+    explanation
   }`;
 
-  const data = await client.fetch(query);
-  return data;
+  const data = await client.fetch(query, { type });
+  const shuffled = data.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 }
 
 const page = withPageAuthRequired(
-  async () => {
-    const questions = await getData();
+  async ({ params }) => {
+    const count = 50;
+    const type = params.type === "pstar" ? "pstar" : "airlaw";
+    const questions = await getData(type, count);
     const { user } = await getSession();
 
     if (user) {
       try {
-        // console.log("user from quiz page", user);
         const response = await axios.post("/api/checkUser", {
           username: user.nickname,
           email: user.email,
@@ -44,7 +47,15 @@ const page = withPageAuthRequired(
 
     return (
       <>
-        {user ? <Quiz questions={questions} email={user.email} /> : <Loader />}
+        {user ? (
+          <QuizComponent
+            questions={questions}
+            email={user.email}
+            quizType={type}
+          />
+        ) : (
+          <Loader />
+        )}
       </>
     );
   },
