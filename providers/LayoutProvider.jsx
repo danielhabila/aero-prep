@@ -9,14 +9,15 @@ import Footer from "@/components/Footer";
 function LayoutProvider({ children }) {
   const pathname = usePathname();
   const isPublicRoute = ["sign-in", "sign-up"].includes(pathname.split("/")[1]);
+  const isDashboardRoute = pathname.includes("/dashboard");
 
   const getNavbar = () => {
-    if (isPublicRoute) return null;
+    if (isPublicRoute || isDashboardRoute) return null;
     return <Navbar />;
   };
 
   const getFooter = () => {
-    if (isPublicRoute) return null;
+    if (isPublicRoute || isDashboardRoute) return null;
     return <Footer />;
   };
 

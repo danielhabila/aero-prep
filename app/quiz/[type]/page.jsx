@@ -22,7 +22,8 @@ async function getData(type, count = 50) {
 const page = withPageAuthRequired(
   async ({ params }) => {
     const count = 50;
-    const type = params.type === "pstar" ? "pstar" : "airlaw";
+    // const type = params.type === "pstar" ? "pstar" : "airlaw";
+    const type = params.type === "pstar" ? "test" : "airlaw";
     const questions = await getData(type, count);
     const { user } = await getSession();
 

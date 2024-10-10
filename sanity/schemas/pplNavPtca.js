@@ -1,12 +1,13 @@
 export default {
-  name: "generalKnowledge",
-  title: "General Knowledge",
+  name: "pplNavPtca",
+  title: "PPL Nav Ptca",
   type: "document",
   fields: [
     {
       name: "question",
       title: "Question",
-      type: "string",
+      type: "array",
+      of: [{ type: "block" }],
     },
     {
       name: "answers",

@@ -2,7 +2,26 @@
 import { useState, useEffect } from "react";
 import StatCard from "./StatCard";
 import axios from "axios";
-import { PortableText } from "@portabletext/react";
+import { PortableText, PortableTextComponents } from "@portabletext/react";
+
+const CustomLink = ({ value, children }) => {
+  const target = (value?.href || "").startsWith("http") ? "_blank" : undefined;
+  return (
+    <a
+      href={value?.href}
+      target={target}
+      rel={target === "_blank" ? "noopener noreferrer" : undefined}
+    >
+      {children}
+    </a>
+  );
+};
+
+const components = {
+  marks: {
+    link: CustomLink,
+  },
+};
 
 export default function QuizComponent({ questions, email, quizType }) {
   // State management
@@ -129,9 +148,17 @@ export default function QuizComponent({ questions, email, quizType }) {
 
   const renderQuestion = () => (
     <>
-      <h3 className="mb-5 text-2xl font-bold">
+      {/* <h3 className="mb-5 text-2xl font-bold">
         {questions[activeQuestion].question}
-      </h3>
+      </h3> */}
+      {questions[activeQuestion].question && (
+        <h3 className="mb-5 text-2xl font-bold">
+          <PortableText
+            value={questions[activeQuestion].question}
+            components={components}
+          />
+        </h3>
+      )}
       <ul>
         {questions[activeQuestion].answers.map((answer, idx) => (
           <li

@@ -1,8 +1,19 @@
 import airlaw from "./schemas/airlaw";
-import generalKnowledge from "./schemas/gk";
 import pstar from "./schemas/pstar";
 import pplAirlawPtca from "./schemas/pplAirlawPtca";
+import pplGenPtca from "./schemas/pplGenPtca";
+import pplMetPtca from "./schemas/pplMetPtca";
+import pplNavPtca from "./schemas/pplNavPtca";
+import test from "./schemas/test";
 
 export const schema = {
-  types: [airlaw, generalKnowledge, pstar, pplAirlawPtca],
+  types: [
+    airlaw,
+    pplGenPtca,
+    pplMetPtca,
+    pplNavPtca,
+    pstar,
+    pplAirlawPtca,
+    test,
+  ],
 };
