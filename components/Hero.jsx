@@ -7,8 +7,8 @@ const Hero = () => {
       <Image
         src="https://images.pexels.com/photos/6894103/pexels-photo-6894103.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
         alt="Background Image"
-        layout="fill"
-        objectFit="cover"
+        fill
+        style={{ objectFit: "cover" }}
         quality={100}
         className="opacity-30"
       />

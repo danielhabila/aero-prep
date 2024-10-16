@@ -17,7 +17,7 @@ export default function StatItem({ quizResult }) {
     <Disclosure as="div" className="pt-3">
       {({ open }) => (
         <>
-          <dt className="border-0 bg-[#191f24] rounded-md ring-1 ring-white/20 p-5">
+          <dt className="border-0 bg-slate-800/40 rounded-md ring-1 ring-white/20 p-5 odd:bg-gradient-to-tr from-gray-900 to-gray-800">
             <DisclosureButton className="flex w-full items-start justify-between text-left text-gray-100">
               <div className="flex flex-start space-x-4 w-full">
                 <div className="grow">
@@ -83,7 +83,7 @@ export default function StatItem({ quizResult }) {
           </dt>
           <DisclosurePanel
             as="dd"
-            className="mt-2 py-2 md:px-12 px-4 ring-1 ring-white/20 rounded-md"
+            className="mt-2 py-2 md:px-12 px-4 ring-1 ring-white/20 rounded-md bg-slate-800/20"
           >
             <div className="text-base text-gray-300">
               <div className="flex flex-col items-center mb-8">

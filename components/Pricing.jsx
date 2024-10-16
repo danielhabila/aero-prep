@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import axios from "axios";
 
 const frequencies = [
   { value: "6months", label: "6 Months", priceSuffix: "/6 months" },
@@ -47,14 +49,47 @@ function classNames(...classes) {
 
 export default function Pricing() {
   const [frequency, setFrequency] = useState(frequencies[0]);
+  const [userSubscriptions, setUserSubscriptions] = useState([]);
+  const { user } = useUser();
+
+  const handleQuizSelection = async (quizType, userEmail) => {
+    console.log("userEmail", userEmail, "quizType", quizType);
+    try {
+      const response = await axios.post("/api/updateSubscription", {
+        email: userEmail,
+        quizType,
+      });
+      if (response.status === 200 || response.status === 409) {
+        setUserSubscriptions([...userSubscriptions, quizType]);
+      } else {
+        console.error("Failed to update subscription");
+      }
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserSubscriptions = async () => {
+      if (user) {
+        try {
+          const response = await axios.get("/api/updateSubscription", {
+            params: { email: user.email },
+          });
+          setUserSubscriptions(response.data.subscriptions);
+        } catch (error) {
+          console.error("Error fetching user subscriptions:", error);
+        }
+      }
+    };
+
+    fetchUserSubscriptions();
+  }, [user]);
 
   return (
-    <div className="bg-gray-900 py-24 sm:py-32">
+    <div className="py-8">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-indigo-400">
-            Pricing
-          </h2>
           <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Pricing plans for teams of&nbsp;all&nbsp;sizes
           </p>
@@ -112,27 +147,47 @@ export default function Pricing() {
                 </p>
                 {tier.id === "pStar" ? (
                   <Link
-                    href="/quiz/pstar"
+                    href={
+                      userSubscriptions.includes("pstar") ? "#" : "/quiz/pstar"
+                    }
                     aria-describedby={tier.id}
+                    onClick={() =>
+                      !userSubscriptions.includes("pstar") &&
+                      handleQuizSelection("pstar", user.email)
+                    }
                     className={classNames(
-                      "bg-white/20 text-white hover:bg-white/30 focus-visible:outline-white",
+                      userSubscriptions.includes("pstar")
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-white/20 text-white hover:bg-white/30 focus-visible:outline-white",
                       "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                     )}
+                    disabled={userSubscriptions.includes("pstar")}
                   >
-                    Take PSTAR Quiz
+                    {userSubscriptions.includes("pstar")
+                      ? "Subscribed"
+                      : "Start"}
                   </Link>
                 ) : (
                   <Link
-                    href="/quiz/ppl"
+                    href={userSubscriptions.includes("ppl") ? "#" : "/quiz/ppl"}
                     aria-describedby={tier.id}
+                    onClick={() =>
+                      !userSubscriptions.includes("ppl") &&
+                      handleQuizSelection("ppl", user.email)
+                    }
                     className={classNames(
-                      tier.mostPopular
-                        ? "bg-indigo-500 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-indigo-500"
-                        : "bg-white/10 text-white hover:bg-white/20 focus-visible:outline-white",
+                      userSubscriptions.includes("ppl")
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : tier.mostPopular
+                          ? "bg-indigo-500 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-indigo-500"
+                          : "bg-white/10 text-white hover:bg-white/20 focus-visible:outline-white",
                       "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                     )}
+                    disabled={userSubscriptions.includes("ppl")}
                   >
-                    Take PPL Quiz
+                    {userSubscriptions.includes("ppl")
+                      ? "Subscribed"
+                      : "Take PPL Quiz"}
                   </Link>
                 )}
                 <ul

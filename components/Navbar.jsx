@@ -68,7 +68,13 @@ const Navbar = () => {
                 {!user ? (
                   <a
                     className="rounded-full px-4 py-1 inline-flex items-center bg-white font-medium hover:bg-white/80 group text-black"
-                    href={`/api/auth/login?returnTo=${encodeURIComponent(window.location.pathname)}`}
+                    href={
+                      window.location.pathname === "/"
+                        ? `/dashboard`
+                        : `/api/auth/login?returnTo=${encodeURIComponent(
+                            window.location.pathname
+                          )}`
+                    }
                   >
                     Login{" "}
                     <span className="tracking-normal text-blue-950 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">
