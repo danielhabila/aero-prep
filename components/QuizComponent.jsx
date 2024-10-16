@@ -23,7 +23,7 @@ const components = {
   },
 };
 
-export default function QuizComponent({ questions, email, quizType }) {
+export default function QuizComponent({ questions, email, quizType, title }) {
   // State management
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
@@ -127,7 +127,7 @@ export default function QuizComponent({ questions, email, quizType }) {
 
   // Render functions
   const renderQuestionNavigation = () => (
-    <div className="hidden mb-10 md:flex md:flex-wrap md:gap-1">
+    <div className="hidden mb-14 md:flex md:flex-wrap md:gap-1">
       {questions.map((_, idx) => (
         <button
           key={idx}
@@ -148,15 +148,16 @@ export default function QuizComponent({ questions, email, quizType }) {
 
   const renderQuestion = () => (
     <>
-      {/* <h3 className="mb-5 text-2xl font-bold">
-        {questions[activeQuestion].question}
-      </h3> */}
       {questions[activeQuestion].question && (
-        <h3 className="mb-5 text-2xl font-bold">
-          <PortableText
-            value={questions[activeQuestion].question}
-            components={components}
-          />
+        <h3 className="mb-10 text-2xl font-bold">
+          {quizType === "pstar" ? (
+            questions[activeQuestion].question
+          ) : (
+            <PortableText
+              value={questions[activeQuestion].question}
+              components={components}
+            />
+          )}
         </h3>
       )}
       <ul>
@@ -173,20 +174,32 @@ export default function QuizComponent({ questions, email, quizType }) {
         ))}
       </ul>
       <div className="flex justify-between">
-        {activeQuestion > 0 && (
-          <button
-            onClick={previousQuestion}
-            className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg"
-          >
-            ← Previous
-          </button>
-        )}
+        <div>
+          {activeQuestion > 0 && (
+            <button
+              onClick={previousQuestion}
+              className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg"
+            >
+              ← Previous
+            </button>
+          )}
+        </div>
         <button
           onClick={nextQuestion}
           className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg"
         >
           {activeQuestion === questions.length - 1 ? "Finish" : "Next →"}
         </button>
+      </div>
+      <div className="flex justify-center mt-8">
+        {!showResults && (
+          <button
+            onClick={submitQuiz}
+            className="font-bold bg-white text-black hover:bg-white/80 px-4 py-1.5 rounded-lg mr-2 w-fit"
+          >
+            Finish Attempt
+          </button>
+        )}
       </div>
     </>
   );
@@ -263,16 +276,8 @@ export default function QuizComponent({ questions, email, quizType }) {
   return (
     <div className="min-h-[500px]">
       <div className="max-w-6xl px-4 sm:px-6 mx-auto flex justify-center py-10 flex-col">
-        <div className="flex justify-end">
-          {!showResults && (
-            <button
-              onClick={submitQuiz}
-              className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg mr-2 w-fit"
-            >
-              Submit
-            </button>
-          )}
-        </div>
+        <h1 className="text-3xl font-bold mb-10 text-center ">{title}</h1>
+
         {!showResults ? (
           <>
             <div className="flex justify-start mb-10 w-fit bg-blue-700 text-white px-4 rounded-md py-1 text-lg font-medium md:hidden">

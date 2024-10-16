@@ -6,12 +6,20 @@ import axios from "axios";
 import Link from "next/link";
 import Loader from "@/components/Loader";
 import Image from "next/image";
-import logo from "../../../public/images/prepMeWhite2.png";
+// import pplStudentImage from "../../../public/images/prepMeWhite2.png";
+import QuizModal from "@/components/quizModal";
+import firstSoloImage from "../../../public/images/first-solo.jpeg";
+import pplStudentImage from "../../../public/images/ppl-student.png";
+import QuizComponent from "@/components/QuizComponent";
 
 export default function SubscriptionsPage() {
+  const [open, setOpen] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState("");
   const { user, isLoading } = useUser();
   const [subscriptions, setSubscriptions] = useState([]);
   const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState([]);
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
@@ -34,11 +42,52 @@ export default function SubscriptionsPage() {
     }
   }, [user, isLoading]);
 
+  const startQuiz = async (quizType) => {
+    try {
+      const response = await axios.get("/api/getQuizQuestions", {
+        params: { type: quizType, count: 50 },
+      });
+      setQuizQuestions(response.data);
+
+      setShowQuiz(true);
+    } catch (error) {
+      console.error("Error fetching quiz questions:", error);
+    }
+  };
+
   if (isLoading || isLoadingSubscriptions) {
     return (
       <div className="flex justify-center items-center h-96">
         <Loader />
       </div>
+    );
+  }
+
+  if (showQuiz) {
+    const getQuizTitle = (quizType) => {
+      switch (quizType) {
+        case "pstar":
+          return "PSTAR";
+        case "pplAirlawPtca":
+          return "PPL Airlaw";
+        case "pplMetPtca":
+          return "PPL Meteorology";
+        case "pplGenPtca":
+          return "PPL General Knowledge";
+        case "pplNavPtca":
+          return "PPL Navigation";
+        default:
+          return `${quizType.charAt(0).toUpperCase() + quizType.slice(1)} Quiz`;
+      }
+    };
+
+    return (
+      <QuizComponent
+        questions={quizQuestions}
+        email={user.email}
+        quizType={selectedQuiz}
+        title={getQuizTitle(selectedQuiz)}
+      />
     );
   }
 
@@ -64,27 +113,48 @@ export default function SubscriptionsPage() {
           <div className="mb-4">
             <a
               className="block group overflow-hidden"
-              href={`/quiz/${subscription}`}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedQuiz(subscription);
+                setOpen(true);
+              }}
             >
               <Image
                 className="w-full aspect-[101/64] object-cover group-hover:scale-105 transition duration-700 ease-out"
-                src={logo}
+                src={
+                  subscription === "pstar" ? firstSoloImage : pplStudentImage
+                }
                 width="202"
                 height="128"
-                alt="Item 01"
+                alt={`${subscription.toUpperCase()} Quiz`}
               />
             </a>
           </div>
           <div className="grow text-center">
             <a
               className="font-cabinet-grotesk font-bold text-gray-100 hover:text-blue-500 transition duration-150 ease-in-out"
-              href="#0"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedQuiz(subscription);
+                setOpen(true);
+              }}
             >
               {subscription.toUpperCase()} Quiz
             </a>
           </div>
         </div>
       ))}
+      <QuizModal
+        open={open}
+        setOpen={setOpen}
+        selectedQuiz={selectedQuiz}
+        onStartQuiz={(quizType) => {
+          setSelectedQuiz(quizType);
+          startQuiz(quizType);
+        }}
+      />
     </div>
   );
 }

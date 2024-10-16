@@ -7,7 +7,7 @@ export default function DashboardHeader() {
   const pathname = usePathname();
   const title = pathname.split("/").pop();
   const { user } = useUser();
-  console.log(user);
+
   // Convert to sentence case
   const sentenceCaseTitle =
     title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
