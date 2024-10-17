@@ -63,22 +63,27 @@ export default function StatItem({ quizResult }) {
                     </div>
                   </footer>
                 </div>
-                <h1
-                  title="Percentage"
-                  className="flex items-center text-xl font-bold"
-                >
-                  {quizResult.scorePercentage
-                    ? `${quizResult.scorePercentage}%`
-                    : "No score percentage"}
-                </h1>
+                <div className="flex items-center space-x-2">
+                  <h1
+                    title="Percentage"
+                    className="flex items-center text-xl font-bold"
+                  >
+                    {quizResult.scorePercentage !== undefined &&
+                    quizResult.scorePercentage !== null
+                      ? quizResult.scorePercentage === 0
+                        ? "0%"
+                        : `${quizResult.scorePercentage}%`
+                      : "N/A"}
+                  </h1>
+                  <span className="flex pl-6 h-7 justify-center items-center">
+                    {open ? (
+                      <ChevronUpIcon className="h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <ChevronDownIcon className="h-6 w-6" aria-hidden="true" />
+                    )}
+                  </span>
+                </div>
               </div>
-              <span className="ml-6 flex h-7 items-center">
-                {open ? (
-                  <ChevronUpIcon className="h-6 w-6" aria-hidden="true" />
-                ) : (
-                  <ChevronDownIcon className="h-6 w-6" aria-hidden="true" />
-                )}
-              </span>
             </DisclosureButton>
           </dt>
           <DisclosurePanel

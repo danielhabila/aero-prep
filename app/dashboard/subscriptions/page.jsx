@@ -44,11 +44,11 @@ export default function SubscriptionsPage() {
 
   const startQuiz = async (quizType) => {
     try {
+      const count = quizType === "pstar" ? 50 : 25;
       const response = await axios.get("/api/getQuizQuestions", {
-        params: { type: quizType, count: 50 },
+        params: { type: quizType, count: count },
       });
       setQuizQuestions(response.data);
-
       setShowQuiz(true);
     } catch (error) {
       console.error("Error fetching quiz questions:", error);
@@ -76,6 +76,8 @@ export default function SubscriptionsPage() {
           return "PPL General Knowledge";
         case "pplNavPtca":
           return "PPL Navigation";
+        case "full":
+          return "PPL Complete Exam";
         default:
           return `${quizType.charAt(0).toUpperCase() + quizType.slice(1)} Quiz`;
       }
@@ -107,42 +109,54 @@ export default function SubscriptionsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 lg:max-w-none items-start pb-6">
+    <div className="w-full mx-auto flex flex-wrap justify-evenly items-stretch gap-8 px-4 pb-6">
       {subscriptions.map((subscription) => (
-        <div key={subscription} className="h-full flex flex-col">
-          <div className="mb-4">
-            <a
-              className="block group overflow-hidden"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setSelectedQuiz(subscription);
-                setOpen(true);
-              }}
-            >
+        <div
+          key={subscription}
+          className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl"
+        >
+          <div className="h-full flex flex-col border border-gray-700 rounded-3xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-blue-500">
+            <div className="relative h-64">
               <Image
-                className="w-full aspect-[101/64] object-cover group-hover:scale-105 transition duration-700 ease-out"
+                className="w-full h-full object-cover transition duration-700 ease-out transform hover:scale-110"
                 src={
-                  subscription === "pstar" ? firstSoloImage : pplStudentImage
+                  subscription === "pstar"
+                    ? "https://images.unsplash.com/photo-1518228684816-9135c15ab4ea?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    : "https://images.unsplash.com/photo-1501821221140-a47f57e8940d?q=80&w=2500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 }
-                width="202"
-                height="128"
+                width={400}
+                height={300}
                 alt={`${subscription.toUpperCase()} Quiz`}
               />
-            </a>
-          </div>
-          <div className="grow text-center">
-            <a
-              className="font-cabinet-grotesk font-bold text-gray-100 hover:text-blue-500 transition duration-150 ease-in-out"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setSelectedQuiz(subscription);
-                setOpen(true);
-              }}
-            >
-              {subscription.toUpperCase()} Quiz
-            </a>
+              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                <button
+                  onClick={() => {
+                    setSelectedQuiz(subscription);
+                    setOpen(true);
+                  }}
+                  className="bg-blue-500 text-white px-6 py-3 rounded-full font-semibold text-lg hover:bg-blue-600 transition duration-300"
+                >
+                  Take Quiz
+                </button>
+              </div>
+            </div>
+            <div className="p-8 flex-grow flex flex-col justify-between">
+              <h3 className="font-bold text-2xl text-gray-100 mb-4">
+                {subscription.toUpperCase()} Quiz
+              </h3>
+              <p className="text-gray-400 text-lg mb-6">
+                Test your knowledge on {subscription.toUpperCase()} topics.
+              </p>
+              <button
+                onClick={() => {
+                  setSelectedQuiz(subscription);
+                  setOpen(true);
+                }}
+                className="text-blue-500 hover:text-blue-400 font-semibold text-lg transition duration-300"
+              >
+                Take Quiz &rarr;
+              </button>
+            </div>
           </div>
         </div>
       ))}

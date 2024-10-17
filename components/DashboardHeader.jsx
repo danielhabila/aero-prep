@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import MobileNavigation from "./MobileNavigation";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
@@ -14,8 +15,12 @@ export default function DashboardHeader() {
 
   return (
     <div className="flex justify-between h-16 shrink-0 items-center border-b border-gray-600 my-4 px-6">
-      <h1 className="text-2xl font-bold ">{sentenceCaseTitle}</h1>
-
+      <div className="flex items-center">
+        <div className="lg:hidden mr-4">
+          <MobileNavigation />
+        </div>
+        <h1 className="text-2xl font-bold">{sentenceCaseTitle}</h1>
+      </div>
       <div className="ml-4 text-gray-400">{user.nickname}</div>
     </div>
   );
