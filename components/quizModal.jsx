@@ -59,11 +59,11 @@ export default function QuizModal({
                   </Dialog.Title>
                 </div>
 
-                {selectedQuiz === "pstar" ? (
+                {selectedQuiz === "airlaw" ? (
                   <button
                     onClick={() => {
                       setOpen(false);
-                      onStartQuiz("pstar");
+                      onStartQuiz("airlaw");
                     }}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-4/6 mx-auto"
                   >

@@ -25,7 +25,7 @@ export default function MobileNavigation() {
       <div className="lg:hidden">
         <button
           type="button"
-          className="p-2 text-gray-400 hover:text-white"
+          className="py-2 pr-2 text-gray-400 hover:text-white"
           onClick={() => setIsOpen(true)}
         >
           <span className="sr-only">Open menu</span>

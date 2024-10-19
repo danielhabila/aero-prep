@@ -55,6 +55,12 @@ export default function SubscriptionsPage() {
     }
   };
 
+  const exitQuiz = () => {
+    setShowQuiz(false);
+    setQuizQuestions([]);
+    setSelectedQuiz("");
+  };
+
   if (isLoading || isLoadingSubscriptions) {
     return (
       <div className="flex justify-center items-center h-96">
@@ -89,6 +95,7 @@ export default function SubscriptionsPage() {
         email={user.email}
         quizType={selectedQuiz}
         title={getQuizTitle(selectedQuiz)}
+        onExit={exitQuiz}
       />
     );
   }
@@ -109,13 +116,13 @@ export default function SubscriptionsPage() {
   }
 
   return (
-    <div className="w-full mx-auto flex flex-wrap justify-evenly items-stretch gap-8 px-4 pb-6">
+    <div className="w-full mx-auto flex flex-wrap justify-evenly items-stretch gap-8 lg:px-4 py-8">
       {subscriptions.map((subscription) => (
         <div
           key={subscription}
           className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl"
         >
-          <div className="h-full flex flex-col border border-gray-700 rounded-3xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-blue-500">
+          <div className="h-full flex flex-col border border-gray-700 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-blue-500">
             <div className="relative h-64">
               <Image
                 className="w-full h-full object-cover transition duration-700 ease-out transform hover:scale-110"
@@ -131,10 +138,11 @@ export default function SubscriptionsPage() {
               <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                 <button
                   onClick={() => {
-                    setSelectedQuiz(subscription);
+                    // setSelectedQuiz(subscription);
+                    setSelectedQuiz("airlaw");
                     setOpen(true);
                   }}
-                  className="bg-blue-500 text-white px-6 py-3 rounded-full font-semibold text-lg hover:bg-blue-600 transition duration-300"
+                  className="bg-blue-500 text-white px-4 py-1.5 rounded-full font-semibold text-lg hover:bg-blue-600 transition duration-300"
                 >
                   Take Quiz
                 </button>
@@ -144,7 +152,7 @@ export default function SubscriptionsPage() {
               <h3 className="font-bold text-2xl text-gray-100 mb-4">
                 {subscription.toUpperCase()} Quiz
               </h3>
-              <p className="text-gray-400 text-lg mb-6">
+              <p className="text-gray-400 text-md mb-6">
                 Test your knowledge on {subscription.toUpperCase()} topics.
               </p>
               <button

@@ -88,7 +88,7 @@ export default function Pricing() {
 
   return (
     <div className="py-8">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Pricing plans for teams of&nbsp;all&nbsp;sizes
@@ -117,7 +117,7 @@ export default function Pricing() {
             </RadioGroup>
           </fieldset>
         </div>
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-10">
+        <div className="mx-auto max-w-7xl lg:px-8 mt-10">
           <div className="mx-auto grid max-w-md grid-cols-1 gap-8 lg:max-w-4xl lg:grid-cols-2">
             {tiers.map((tier) => (
               <div
