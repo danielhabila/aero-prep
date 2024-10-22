@@ -6,6 +6,7 @@ import { CheckIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import axios from "axios";
+import { loadStripe } from "@stripe/stripe-js";
 
 const frequencies = [
   { value: "6months", label: "6 Months", priceSuffix: "/6 months" },
@@ -43,6 +44,55 @@ const tiers = [
   },
 ];
 
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
+
+const PurchaseButton = ({ price, disabled, user }) => {
+  const handleClick = async () => {
+    if (!user) {
+      // Redirect to login page if user is not logged in
+      window.location.href = "/api/auth/login?returnTo=/dashboard/purchase";
+      return;
+    }
+
+    try {
+      const stripe = await stripePromise;
+      const response = await axios.post("/api/create-checkout-session", {
+        price,
+        email: user.email,
+      });
+      const { sessionId } = response.data;
+      if (!sessionId) {
+        throw new Error("Failed to create checkout session");
+      }
+      const result = await stripe.redirectToCheckout({
+        sessionId: sessionId,
+      });
+      if (result.error) {
+        console.error(result.error.message);
+      }
+    } catch (error) {
+      console.error("Error in checkout process:", error);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={disabled}
+      className={classNames(
+        disabled
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-indigo-500 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-indigo-500",
+        "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 w-full"
+      )}
+    >
+      {disabled ? "Subscribed" : user ? "Purchase" : "Login to Purchase"}
+    </button>
+  );
+};
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -59,32 +109,40 @@ export default function Pricing() {
         email: userEmail,
         quizType,
       });
-      if (response.status === 200 || response.status === 409) {
-        setUserSubscriptions([...userSubscriptions, quizType]);
+      if (response.status === 200 || response.status === 201) {
+        fetchUserSubscriptions();
+        return true; // Return true if subscription was successful
       } else {
         console.error("Failed to update subscription");
+        return false;
       }
     } catch (error) {
       console.error("Error updating subscription:", error);
+      return false;
+    }
+  };
+
+  const fetchUserSubscriptions = async () => {
+    if (user) {
+      try {
+        const response = await axios.get("/api/check-subscription", {
+          params: { email: user.email },
+        });
+        setUserSubscriptions(response.data.subscriptions);
+      } catch (error) {
+        console.error("Error fetching user subscriptions:", error);
+      }
     }
   };
 
   useEffect(() => {
-    const fetchUserSubscriptions = async () => {
-      if (user) {
-        try {
-          const response = await axios.get("/api/updateSubscription", {
-            params: { email: user.email },
-          });
-          setUserSubscriptions(response.data.subscriptions);
-        } catch (error) {
-          console.error("Error fetching user subscriptions:", error);
-        }
-      }
-    };
-
     fetchUserSubscriptions();
   }, [user]);
+
+  const isPstarSubscribed = userSubscriptions.some(
+    (sub) => sub.type === "pstar"
+  );
+  const isPplSubscribed = userSubscriptions.some((sub) => sub.type === "ppl");
 
   return (
     <div className="py-8">
@@ -147,48 +205,30 @@ export default function Pricing() {
                 </p>
                 {tier.id === "pStar" ? (
                   <Link
-                    href={
-                      userSubscriptions.includes("pstar") ? "#" : "/quiz/pstar"
-                    }
+                    href={isPstarSubscribed ? "#" : "/dashboard/subscriptions"}
                     aria-describedby={tier.id}
                     onClick={() =>
-                      !userSubscriptions.includes("pstar") &&
+                      !isPstarSubscribed &&
                       handleQuizSelection("pstar", user.email)
                     }
                     className={classNames(
-                      userSubscriptions.includes("pstar")
+                      isPstarSubscribed
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-white/20 text-white hover:bg-white/30 focus-visible:outline-white",
                       "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                     )}
-                    disabled={userSubscriptions.includes("pstar")}
+                    disabled={isPstarSubscribed}
                   >
-                    {userSubscriptions.includes("pstar")
-                      ? "Subscribed"
-                      : "Start"}
+                    {isPstarSubscribed ? "Subscribed" : "Start"}
                   </Link>
                 ) : (
-                  <Link
-                    href={userSubscriptions.includes("ppl") ? "#" : "/quiz/ppl"}
-                    aria-describedby={tier.id}
-                    onClick={() =>
-                      !userSubscriptions.includes("ppl") &&
-                      handleQuizSelection("ppl", user.email)
-                    }
-                    className={classNames(
-                      userSubscriptions.includes("ppl")
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : tier.mostPopular
-                          ? "bg-indigo-500 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-indigo-500"
-                          : "bg-white/10 text-white hover:bg-white/20 focus-visible:outline-white",
-                      "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                  <PurchaseButton
+                    price={parseFloat(
+                      tier.price[frequency.value].replace("$", "")
                     )}
-                    disabled={userSubscriptions.includes("ppl")}
-                  >
-                    {userSubscriptions.includes("ppl")
-                      ? "Subscribed"
-                      : "Take PPL Quiz"}
-                  </Link>
+                    disabled={isPplSubscribed}
+                    user={user}
+                  />
                 )}
                 <ul
                   role="list"

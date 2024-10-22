@@ -19,9 +19,11 @@ export default function DashboardHeader() {
         <div className="lg:hidden mr-4">
           <MobileNavigation />
         </div>
-        <h1 className="text-2xl font-bold">{sentenceCaseTitle}</h1>
+        <h1 className="md:text-2xl text-xl font-bold">{sentenceCaseTitle}</h1>
       </div>
-      <div className="ml-4 text-gray-400">{user.nickname}</div>
+      <div className="ml-4 text-sm md:text-base text-gray-400">
+        @{user.nickname}
+      </div>
     </div>
   );
 }

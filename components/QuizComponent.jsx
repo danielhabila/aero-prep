@@ -37,8 +37,6 @@ export default function QuizComponent({
   const [showResults, setShowResults] = useState(false);
   const [quizStartTime] = useState(new Date().toISOString());
   const [results, setResults] = useState({
-    correctAnswers: 0,
-    wrongAnswers: 0,
     answers: Array(questions.length).fill(null),
   });
 
@@ -76,14 +74,6 @@ export default function QuizComponent({
 
   // Grade current question and move to next
   const nextQuestion = () => {
-    const isCorrect =
-      selectedAnswer === questions[activeQuestion].correctAnswer;
-    setResults((prev) => ({
-      ...prev,
-      correctAnswers: isCorrect ? prev.correctAnswers + 1 : prev.correctAnswers,
-      wrongAnswers: !isCorrect ? prev.wrongAnswers + 1 : prev.wrongAnswers,
-    }));
-
     if (activeQuestion < questions.length - 1) {
       setActiveQuestion((prev) => prev + 1);
     } else {
@@ -98,7 +88,6 @@ export default function QuizComponent({
     ).length;
 
     const finalResults = {
-      ...results,
       startTime: quizStartTime,
       examType:
         quizType === "pstar" ? "Complete Exam - PSTAR" : "Complete Exam - PPL",
@@ -107,6 +96,7 @@ export default function QuizComponent({
         (correctAnswersCount / questions.length) * 100
       ),
       correctAnswers: correctAnswersCount,
+      wrongAnswers: questions.length - correctAnswersCount,
       questions: questions.map((q, index) => ({
         question: q.question,
         answers: q.answers,
@@ -115,7 +105,7 @@ export default function QuizComponent({
         selectedAnswer: results.answers[index]?.selectedAnswer || null,
       })),
     };
-
+    console.log("finalResults", finalResults);
     setShowResults(true);
 
     try {
@@ -125,7 +115,6 @@ export default function QuizComponent({
       });
       if (response.status !== 200)
         throw new Error("Network response was not ok");
-      console.log("Quiz results saved successfully:", response.data);
     } catch (error) {
       console.error("Error saving quiz results:", error);
     }
@@ -231,7 +220,6 @@ export default function QuizComponent({
   }, [showResults]);
 
   const renderResults = () => {
-    // Count correct answers based on navigation buttons
     const correctAnswersCount = results.answers.filter(
       (result) => result && result.selectedAnswer === result.correctAnswer
     ).length;
@@ -242,8 +230,6 @@ export default function QuizComponent({
       setSelectedAnswerIndex(null);
       setShowResults(false);
       setResults({
-        correctAnswers: 0,
-        wrongAnswers: 0,
         answers: Array(questions.length).fill(null),
       });
     };

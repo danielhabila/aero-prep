@@ -102,7 +102,7 @@ export default function StatItem({ quizResult }) {
                     value={quizResult.correctAnswers}
                   />
                   <StatCard
-                    title="Wrong Answers"
+                    title="Wrong / Unanswered"
                     value={quizResult.wrongAnswers}
                   />
                 </div>

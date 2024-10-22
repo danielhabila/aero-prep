@@ -11,6 +11,7 @@ import QuizModal from "@/components/quizModal";
 import firstSoloImage from "../../../public/images/first-solo.jpeg";
 import pplStudentImage from "../../../public/images/ppl-student.png";
 import QuizComponent from "@/components/QuizComponent";
+import { useRouter } from "next/navigation";
 
 export default function SubscriptionsPage() {
   const [open, setOpen] = useState(false);
@@ -20,12 +21,14 @@ export default function SubscriptionsPage() {
   const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true);
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState([]);
+  const router = useRouter();
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
       if (user && user.email) {
         try {
-          const response = await axios.get("/api/updateSubscription", {
+          const response = await axios.get("/api/check-subscription", {
             params: { email: user.email },
           });
           setSubscriptions(response.data.subscriptions);
@@ -37,10 +40,33 @@ export default function SubscriptionsPage() {
       }
     };
 
+    const verifyStripeSession = async () => {
+      const sessionId = new URLSearchParams(window.location.search).get(
+        "session_id"
+      );
+      if (sessionId && user) {
+        setVerifyingPayment(true);
+        try {
+          const response = await axios.get("/api/verify-session", {
+            params: { session_id: sessionId, email: user.email },
+          });
+          if (response.status === 200) {
+            await fetchSubscriptions();
+          }
+        } catch (error) {
+          console.error("Error verifying Stripe session:", error);
+        } finally {
+          setVerifyingPayment(false);
+          router.replace("/dashboard/subscriptions");
+        }
+      }
+    };
+
     if (!isLoading) {
       fetchSubscriptions();
+      verifyStripeSession();
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, router]);
 
   const startQuiz = async (quizType) => {
     try {
@@ -65,6 +91,15 @@ export default function SubscriptionsPage() {
     return (
       <div className="flex justify-center items-center h-96">
         <Loader />
+      </div>
+    );
+  }
+
+  if (verifyingPayment) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <Loader />
+        <p className="ml-2">Verifying payment...</p>
       </div>
     );
   }
@@ -119,27 +154,26 @@ export default function SubscriptionsPage() {
     <div className="w-full mx-auto flex flex-wrap justify-evenly items-stretch gap-8 lg:px-4 py-8">
       {subscriptions.map((subscription) => (
         <div
-          key={subscription}
-          className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-2xl"
+          key={subscription.type}
+          className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-sm"
         >
           <div className="h-full flex flex-col border border-gray-700 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-blue-500">
             <div className="relative h-64">
               <Image
                 className="w-full h-full object-cover transition duration-700 ease-out transform hover:scale-110"
                 src={
-                  subscription === "pstar"
+                  subscription.type === "pstar"
                     ? "https://images.unsplash.com/photo-1518228684816-9135c15ab4ea?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     : "https://images.unsplash.com/photo-1501821221140-a47f57e8940d?q=80&w=2500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 }
                 width={400}
                 height={300}
-                alt={`${subscription.toUpperCase()} Quiz`}
+                alt={`${subscription.type.toUpperCase()} Quiz`}
               />
               <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                 <button
                   onClick={() => {
-                    // setSelectedQuiz(subscription);
-                    setSelectedQuiz("airlaw");
+                    setSelectedQuiz(subscription.type);
                     setOpen(true);
                   }}
                   className="bg-blue-500 text-white px-4 py-1.5 rounded-full font-semibold text-lg hover:bg-blue-600 transition duration-300"
@@ -150,14 +184,14 @@ export default function SubscriptionsPage() {
             </div>
             <div className="p-8 flex-grow flex flex-col justify-between">
               <h3 className="font-bold text-2xl text-gray-100 mb-4">
-                {subscription.toUpperCase()} Quiz
+                {subscription.type.toUpperCase()} Quiz
               </h3>
               <p className="text-gray-400 text-md mb-6">
-                Test your knowledge on {subscription.toUpperCase()} topics.
+                Test your knowledge on {subscription.type.toUpperCase()} topics.
               </p>
               <button
                 onClick={() => {
-                  setSelectedQuiz(subscription);
+                  setSelectedQuiz(subscription.type);
                   setOpen(true);
                 }}
                 className="text-blue-500 hover:text-blue-400 font-semibold text-lg transition duration-300"
