@@ -18,8 +18,51 @@ const CustomLink = ({ value, children }) => {
 };
 
 const components = {
+  block: {
+    normal: ({ children }) => <p className="mb-4">{children}</p>,
+    h1: ({ children }) => (
+      <h1 className="text-2xl font-bold mb-4">{children}</h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className="text-xl font-bold mb-3">{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="text-lg font-bold mb-2">{children}</h3>
+    ),
+    h4: ({ children }) => (
+      <h4 className="text-base font-bold mb-2">{children}</h4>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="list-disc pl-5 mb-4">{children}</ul>
+    ),
+    number: ({ children }) => (
+      <ol className="list-decimal pl-5 mb-4">{children}</ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li className="mb-1">{children}</li>,
+    number: ({ children }) => <li className="mb-1">{children}</li>,
+  },
   marks: {
-    link: CustomLink,
+    link: ({ value, children }) => {
+      const target = (value?.href || "").startsWith("http")
+        ? "_blank"
+        : undefined;
+      return (
+        <a
+          href={value?.href}
+          target={target}
+          rel={target === "_blank" ? "noopener noreferrer" : undefined}
+          className="text-blue-400 hover:underline"
+        >
+          {children}
+        </a>
+      );
+    },
+    strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+    em: ({ children }) => <em className="italic">{children}</em>,
   },
 };
 
@@ -149,9 +192,8 @@ export default function QuizComponent({
   const renderQuestion = () => (
     <>
       {questions[activeQuestion].question && (
-        <h3 className="mb-10 text-2xl font-bold">
-          {/* {quizType === "pstar" ? ( */}
-          {quizType === "pstar" || quizType === "airlaw" ? (
+        <h3 className="mb-10 text-2xl font-semibold">
+          {typeof questions[activeQuestion].question === "string" ? (
             questions[activeQuestion].question
           ) : (
             <PortableText
@@ -166,12 +208,16 @@ export default function QuizComponent({
           <li
             key={idx}
             onClick={() => onAnswerSelected(answer, idx)}
-            className={`cursor-pointer tracking-wide font-medium mb-5 py-3 rounded-md border border-gray-700 hover:bg-gray-600 hover:text-white px-8 ${
+            className={`cursor-pointer tracking-wide font-medium mb-5 py-3 rounded-md border border-gray-700 hover:bg-gray-600 px-8 ${
               selectedAnswerIndex === idx &&
               "bg-slate-100 hover:bg-slate-100 text-dark hover:text-black"
             }`}
           >
-            <span>{answer}</span>
+            {typeof answer === "string" ? (
+              <span>{answer}</span>
+            ) : (
+              <PortableText value={answer} components={components} />
+            )}
           </li>
         ))}
       </ul>
@@ -180,7 +226,7 @@ export default function QuizComponent({
           {activeQuestion > 0 && (
             <button
               onClick={previousQuestion}
-              className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg"
+              className="font-bold px-3 py-1 rounded-lg bg-gray-600 hover:bg-gray-700"
             >
               ← Previous
             </button>
@@ -188,7 +234,7 @@ export default function QuizComponent({
         </div>
         <button
           onClick={nextQuestion}
-          className="font-bold hover:bg-gray-600 px-3 py-1.5 rounded-lg"
+          className="font-bold bg-gray-600 hover:bg-gray-700 px-3 py-1 rounded-lg"
         >
           {activeQuestion === questions.length - 1 ? "Finish" : "Next →"}
         </button>
@@ -197,14 +243,14 @@ export default function QuizComponent({
         {!showResults && (
           <button
             onClick={submitQuiz}
-            className="font-bold bg-white text-black hover:bg-white/80 px-4 py-1.5 rounded-lg w-fit"
+            className="font-bold bg-white text-black hover:bg-white/80 px-10 py-1.5 rounded-lg w-fit"
           >
             Finish Attempt
           </button>
         )}
         <button
           onClick={onExit}
-          className="mt-10 font-bold bg-red-500 text-white px-10 py-1.5 w-fit rounded-lg hover:bg-red-600 transition-colors"
+          className="mt-10 font-bold bg-red-500 text-white px-16 py-1.5 w-fit rounded-lg hover:bg-red-600 transition-colors"
         >
           Exit Quiz
         </button>
@@ -236,7 +282,6 @@ export default function QuizComponent({
 
     return (
       <div className="text-center">
-        <h3 className="text-2xl uppercase mb-10">Results 📈</h3>
         <h1 title="Percentage" className="md:text-6xl text-4xl font-bold mb-10">
           You scored{" "}
           {`${Math.floor((correctAnswersCount / questions.length) * 100)}%`}
@@ -249,7 +294,7 @@ export default function QuizComponent({
             value={questions.length - correctAnswersCount}
           />
         </div>
-        <div className="mt-10">
+        <div className="mt-10 ">
           <div className="flex flex-wrap gap-2 mb-10">
             {results.answers.map((result, idx) => (
               <button
@@ -265,10 +310,16 @@ export default function QuizComponent({
               </button>
             ))}
           </div>
-          <div>
-            <p className="font-bold text-xl mb-5">
-              {results.answers[activeQuestion]?.question ||
-                questions[activeQuestion].question}
+          <div className="space-y-8">
+            <p className="font-semibold text-xl mb-5">
+              {typeof questions[activeQuestion].question === "string" ? (
+                questions[activeQuestion].question
+              ) : (
+                <PortableText
+                  value={questions[activeQuestion].question}
+                  components={components}
+                />
+              )}
             </p>
             <ul>
               {questions[activeQuestion].answers.map((answer, idx) => (
@@ -283,14 +334,25 @@ export default function QuizComponent({
                         : ""
                   }`}
                 >
-                  {answer}
+                  {typeof answer === "string" ? (
+                    answer
+                  ) : (
+                    <PortableText value={answer} components={components} />
+                  )}
                 </li>
               ))}
             </ul>
             {questions[activeQuestion].explanation && (
               <div className="mt-4 text-left">
                 <h4 className="font-bold mb-2">Explanation:</h4>
-                <PortableText value={questions[activeQuestion].explanation} />
+                {typeof questions[activeQuestion].explanation === "string" ? (
+                  <p>{questions[activeQuestion].explanation}</p>
+                ) : (
+                  <PortableText
+                    value={questions[activeQuestion].explanation}
+                    components={components}
+                  />
+                )}
               </div>
             )}
           </div>
@@ -316,7 +378,9 @@ export default function QuizComponent({
   return (
     <div className="min-h-[500px]">
       <div className="max-w-6xl px-4 sm:px-6 mx-auto flex justify-center py-10 flex-col">
-        <h1 className="text-3xl font-bold mb-10 text-center ">{title}</h1>
+        <h1 className="text-3xl font-bold mb-10 text-center ">
+          {`${title} ${showResults ? "Results" : ""}`}
+        </h1>
 
         {!showResults ? (
           <>

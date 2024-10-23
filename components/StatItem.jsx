@@ -8,6 +8,55 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import StatCard from "./StatCard";
 import { PortableText } from "@portabletext/react";
 
+const components = {
+  block: {
+    normal: ({ children }) => <p className="mb-4">{children}</p>,
+    h1: ({ children }) => (
+      <h1 className="text-2xl font-bold mb-4">{children}</h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className="text-xl font-bold mb-3">{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="text-lg font-bold mb-2">{children}</h3>
+    ),
+    h4: ({ children }) => (
+      <h4 className="text-base font-bold mb-2">{children}</h4>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="list-disc pl-5 mb-4">{children}</ul>
+    ),
+    number: ({ children }) => (
+      <ol className="list-decimal pl-5 mb-4">{children}</ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li className="mb-1">{children}</li>,
+    number: ({ children }) => <li className="mb-1">{children}</li>,
+  },
+  marks: {
+    link: ({ value, children }) => {
+      const target = (value?.href || "").startsWith("http")
+        ? "_blank"
+        : undefined;
+      return (
+        <a
+          href={value?.href}
+          target={target}
+          rel={target === "_blank" ? "noopener noreferrer" : undefined}
+          className="text-blue-500 hover:underline"
+        >
+          {children}
+        </a>
+      );
+    },
+    strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+    em: ({ children }) => <em className="italic">{children}</em>,
+  },
+};
+
 export default function StatItem({ quizResult }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
 
@@ -123,11 +172,20 @@ export default function StatItem({ quizResult }) {
                     </button>
                   ))}
                 </div>
-                <div>
-                  <p className="font-bold text-xl mb-5">
-                    {quizResult?.questions?.[activeQuestion]?.question ||
-                      "No question available"}
-                  </p>
+                <div className="space-y-8">
+                  <div className="font-medium text-lg mb-5">
+                    {typeof quizResult?.questions?.[activeQuestion]
+                      ?.question === "string" ? (
+                      <p>{quizResult?.questions?.[activeQuestion]?.question}</p>
+                    ) : (
+                      <PortableText
+                        value={
+                          quizResult?.questions?.[activeQuestion]?.question
+                        }
+                        components={components}
+                      />
+                    )}
+                  </div>
                   <ul>
                     {quizResult?.questions?.[activeQuestion]?.answers?.map(
                       (answer, idx) => (
@@ -144,7 +202,9 @@ export default function StatItem({ quizResult }) {
                                 : ""
                           }`}
                         >
-                          {answer}
+                          {typeof answer === "string"
+                            ? answer
+                            : JSON.stringify(answer)}
                           {answer ===
                             quizResult.questions[activeQuestion]
                               .selectedAnswer &&
@@ -164,11 +224,19 @@ export default function StatItem({ quizResult }) {
                     quizResult.questions[activeQuestion].explanation && (
                       <div className="mt-4 text-left">
                         <h4 className="font-bold mb-2">Explanation:</h4>
-                        <PortableText
-                          value={
-                            quizResult.questions[activeQuestion].explanation
-                          }
-                        />
+                        {typeof quizResult.questions[activeQuestion]
+                          .explanation === "string" ? (
+                          <p>
+                            {quizResult.questions[activeQuestion].explanation}
+                          </p>
+                        ) : (
+                          <PortableText
+                            value={
+                              quizResult.questions[activeQuestion].explanation
+                            }
+                            components={components}
+                          />
+                        )}
                       </div>
                     )}
                 </div>

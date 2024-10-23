@@ -160,7 +160,7 @@ export default function SubscriptionsPage() {
           <div className="h-full flex flex-col border border-gray-700 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-blue-500">
             <div className="relative h-64">
               <Image
-                className="w-full h-full object-cover transition duration-700 ease-out transform hover:scale-110"
+                className="w-full h-full"
                 src={
                   subscription.type === "pstar"
                     ? "https://images.unsplash.com/photo-1518228684816-9135c15ab4ea?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -170,17 +170,6 @@ export default function SubscriptionsPage() {
                 height={300}
                 alt={`${subscription.type.toUpperCase()} Quiz`}
               />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                <button
-                  onClick={() => {
-                    setSelectedQuiz(subscription.type);
-                    setOpen(true);
-                  }}
-                  className="bg-blue-500 text-white px-4 py-1.5 rounded-full font-semibold text-lg hover:bg-blue-600 transition duration-300"
-                >
-                  Take Quiz
-                </button>
-              </div>
             </div>
             <div className="p-8 flex-grow flex flex-col justify-between">
               <h3 className="font-bold text-2xl text-gray-100 mb-4">
@@ -196,7 +185,7 @@ export default function SubscriptionsPage() {
                 }}
                 className="text-blue-500 hover:text-blue-400 font-semibold text-lg transition duration-300"
               >
-                Take Quiz &rarr;
+                Start Quiz &rarr;
               </button>
             </div>
           </div>
