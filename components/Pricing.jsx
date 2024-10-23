@@ -18,12 +18,13 @@ const tiers = [
     id: "pStar",
     href: "#",
     price: { "6months": "FREE", "12months": "FREE" },
-    description: "The essentials to provide your best work for clients.",
+    description:
+      "Comprehensive set of practice questions covering all topics required for the exam, including air regulations, flight rules, weather, and safety procedures.",
     features: [
-      "5 products",
-      "Up to 1,000 subscribers",
-      "Basic analytics",
-      "48-hour support response time",
+      "200 Questions",
+      "Explanations Provided",
+      "Progress Tracking & Stats",
+      "Unlimited Access",
     ],
     mostPopular: false,
   },
@@ -32,13 +33,15 @@ const tiers = [
     id: "ppl",
     href: "#",
     price: { "6months": "$60", "12months": "$100" },
-    description: "A plan that scales with your rapidly growing business.",
+    description:
+      "Comprehensive set of practice questions covering all essential subjects, including navigation, meteorology, general knowledge, and air law.",
     features: [
-      "25 products",
-      "Up to 10,000 subscribers",
-      "Advanced analytics",
-      "24-hour support response time",
-      "Marketing automations",
+      "500+ Questions",
+      "Progress Tracking & Stats",
+      "Unlimited Access",
+      "Subject-specific Quizzes",
+      "Complete Exam Simulation",
+      "Customer Support",
     ],
     mostPopular: true,
   },
@@ -145,16 +148,21 @@ export default function Pricing() {
   const isPplSubscribed = userSubscriptions.some((sub) => sub.type === "ppl");
 
   return (
-    <div className="py-8">
+    <div id="pricing" className="  py-16 sm:py-24">
       <div className="mx-auto max-w-7xl lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Pricing plans for teams of&nbsp;all&nbsp;sizes
+          <h2 className="text-base font-semibold leading-7 text-indigo-400">
+            Pricing
+          </h2>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Simple no-tricks pricing
           </p>
         </div>
         <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-300">
-          Choose an affordable plan that’s packed with the best features for
-          engaging your audience, creating customer loyalty, and driving sales.
+          We offer Transport Canada tailored practice exams to help you
+          confidently prepare for your PSTAR and PPL exams. Our question bank
+          covers all key topics ensuring you’re fully equipped to succeed in no
+          time.
         </p>
         <div className="mt-16 flex justify-center">
           <fieldset aria-label="Payment frequency">

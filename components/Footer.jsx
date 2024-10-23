@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <>
       <footer className="relative border-t border-white/10">
-        <div className="flex items-center justify-between mx-auto max-w-6xl px-4 sm:px-6 py-10">
+        <div className="flex items-center justify-between mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
           <div className="flex items-center">
             {/* <a
               href="https://www.instagram.com/flightlevel.fyi"
@@ -40,7 +40,7 @@ export default function Footer() {
               </svg>
             </a> */}
           </div>
-          <p className="text-xs leading-5 text-gray-400 text-center">
+          <p className="text-xs md:text-sm leading-5 text-gray-400 text-center">
             © {year} PrepMe. All rights reserved
           </p>
           <div></div>{" "}

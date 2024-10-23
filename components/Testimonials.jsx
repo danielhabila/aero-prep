@@ -1,62 +1,50 @@
 const testimonials = [
   {
     id: 1,
-    body: "Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.",
+    body: "Hello! I passed my PPL exam! Thank you for your help and for developing a really good question bank. I found your practice tests really similar to the actual TC Exam. I felt really confident writing it today because of all the preparation that I had.",
     author: {
-      name: "Leslie Alexander",
-      handle: "lesliealexander",
-      imageUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Quintin",
+      city: "Winnipeg",
     },
   },
   {
     id: 2,
-    body: "Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.",
+    body: "I just wanted to say a huge thank you!! The questions in your practice exams was absolutely fantastic and covered almost everything I needed! It was brief, complete, and incredibly helpful.I'm so grateful for this product and your support via email. This was the easiest exam I've taken in a while",
     author: {
-      name: "Michael Johnson",
-      handle: "michaeljohnson",
-      imageUrl:
-        "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Justin",
+      city: "Toronto",
     },
   },
   {
     id: 3,
-    body: "Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.",
+    body: "I just wanted to share some wonderful news with you. I wrote my PPL today and passed! I am incredibly happy and am super thankful for your PPL question bank - it was extremely helpful and I am now proficient in the topics I was previously unsure of. Thank you so so much again! You have a great practice exams. and I will definitely recommend you to friends, family and colleagues. I’m over the moon!",
     author: {
-      name: "Leslie Alexander",
-      handle: "lesliealexander",
-      imageUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Srinivas",
+      city: "Calgary",
     },
   },
   {
     id: 4,
-    body: "Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.",
+    body: "Hello, I cleared my PPL exams today with an 87%!! All thanks to your incredible question bank. Please create us a CPL practice exams, I dont mind placing a preorder. Thank you soo much!",
     author: {
-      name: "Michael Johnson",
-      handle: "michaeljohnson",
-      imageUrl:
-        "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Tunde",
+      city: "Thunder Bay",
     },
   },
   {
     id: 5,
-    body: "Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.",
+    body: "Hello, I’m glad to have come across your PSTAR prep. The exam ended up being a breeze, thanks to the currency of your prep material! Got a 98%. Thanks a lot and definitely gonna take advantage of your PPL soon.",
     author: {
-      name: "Leslie Alexander",
-      handle: "lesliealexander",
-      imageUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Nguyen",
+      city: "Vancouver",
     },
   },
   {
     id: 6,
-    body: "Laborum quis quam. Dolorum et ut quod quia. Voluptas numquam delectus nihil. Aut enim doloremque et ipsam.",
+    body: "I wrote the PSTAR yesterday and passed with a 96%. I just wanted to thank you for your time and amazing practice exams you offer. The TC questions were practically identical to your exams. Saved me a lot of time and energy.",
     author: {
-      name: "Michael Johnson",
-      handle: "michaeljohnson",
-      imageUrl:
-        "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Leslie",
+      city: "Yellowknife",
     },
   },
   // More testimonials...
@@ -64,14 +52,14 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <div className="bg-white py-24 sm:py-32">
+    <div className="bg-white py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-lg font-semibold leading-8 tracking-tight text-indigo-600">
             Testimonials
           </h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            We have worked with thousands of amazing people
+            See what our users are saying
           </p>
         </div>
         <div className="mx-auto mt-16 flow-root max-w-2xl sm:mt-20 lg:mx-0 lg:max-w-none">
@@ -86,16 +74,13 @@ export default function Testimonials() {
                     <p>{`“${testimonial.body}”`}</p>
                   </blockquote>
                   <figcaption className="mt-6 flex items-center gap-x-4">
-                    <img
-                      alt=""
-                      src={testimonial.author.imageUrl}
-                      className="h-10 w-10 rounded-full bg-gray-50"
-                    />
                     <div>
                       <div className="font-semibold text-gray-900">
                         {testimonial.author.name}
                       </div>
-                      <div className="text-gray-600">{`@${testimonial.author.handle}`}</div>
+                      <div className="text-gray-600">
+                        ({testimonial.author.city})
+                      </div>
                     </div>
                   </figcaption>
                 </figure>

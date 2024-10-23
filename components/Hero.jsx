@@ -1,7 +1,15 @@
-import Link from "next/link";
+"use client";
+
 import Image from "next/image";
 
 const Hero = () => {
+  const handleScroll = () => {
+    const pricingSection = document.getElementById("pricing");
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="relative h-screen flex items-center justify-center">
       <Image
@@ -17,17 +25,20 @@ const Hero = () => {
         <div className="px-4 md:px-6 max-w-[1500px] mx-auto w-[90%]">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
-              Pass your TC exams in weeks not months
+              Pass your TC exams in days not months
             </h1>
-            <p className="text-gray-200 text-xl py-4">Start practicing now!</p>
+            <p className="text-gray-200 text-xl py-4">
+              Save time and practice questions that will appear on the actual
+              exam.
+            </p>
           </div>
           <div className="mt-6">
-            <Link
-              href={"/quiz"}
-              className=" px-6 py-2 rounded-full inline-flex items-center bg-white text-black font-medium text-lg hover:bg-white/80 group"
+            <button
+              onClick={handleScroll}
+              className="px-6 py-2 rounded-full inline-flex items-center bg-white text-black font-medium text-lg hover:bg-white/80 group"
             >
               I'm ready
-            </Link>
+            </button>
           </div>
         </div>
       </div>
