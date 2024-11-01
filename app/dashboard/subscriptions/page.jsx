@@ -23,6 +23,7 @@ export default function SubscriptionsPage() {
   const [quizQuestions, setQuizQuestions] = useState([]);
   const router = useRouter();
   const [verifyingPayment, setVerifyingPayment] = useState(false);
+  const [savedQuiz, setSavedQuiz] = useState(null);
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
@@ -62,13 +63,26 @@ export default function SubscriptionsPage() {
       }
     };
 
-    if (!isLoading) {
+    const fetchSavedQuizProgress = async (quizType) => {
+      try {
+        const response = await axios.get("/api/quizProgress", {
+          params: { email: user.email, quizType },
+        });
+        setSavedQuiz(response.data);
+      } catch (error) {
+        if (error.response && error.response.status !== 404) {
+          console.error("Error fetching saved quiz progress:", error);
+        }
+      }
+    };
+
+    if (!isLoading && user) {
       fetchSubscriptions();
       verifyStripeSession();
     }
   }, [user, isLoading, router]);
 
-  const startQuiz = async (quizType) => {
+  const startQuiz = async (quizType, resume = false) => {
     try {
       const count = quizType === "pstar" ? 50 : 25;
       const response = await axios.get("/api/getQuizQuestions", {
@@ -76,6 +90,12 @@ export default function SubscriptionsPage() {
       });
       setQuizQuestions(response.data);
       setShowQuiz(true);
+      if (resume && savedQuiz) {
+        // Set the quiz state based on saved progress
+        setActiveQuestion(savedQuiz.activeQuestion);
+        setResults(savedQuiz.results);
+        // ... set other necessary state
+      }
     } catch (error) {
       console.error("Error fetching quiz questions:", error);
     }
@@ -195,9 +215,10 @@ export default function SubscriptionsPage() {
         open={open}
         setOpen={setOpen}
         selectedQuiz={selectedQuiz}
-        onStartQuiz={(quizType) => {
+        savedQuiz={savedQuiz}
+        onStartQuiz={(quizType, resume) => {
           setSelectedQuiz(quizType);
-          startQuiz(quizType);
+          startQuiz(quizType, resume);
         }}
       />
     </div>

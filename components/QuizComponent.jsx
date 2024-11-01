@@ -82,6 +82,7 @@ export default function QuizComponent({
   const [results, setResults] = useState({
     answers: Array(questions.length).fill(null),
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   // Update selected answer when active question changes
   useEffect(() => {
@@ -254,6 +255,13 @@ export default function QuizComponent({
         >
           Exit Quiz
         </button>
+        <button
+          onClick={saveAndQuit}
+          disabled={isSaving}
+          className="mt-10 font-bold bg-yellow-500 text-white px-16 py-1.5 w-fit rounded-lg hover:bg-yellow-600 transition-colors mr-4"
+        >
+          {isSaving ? "Saving..." : "Save and Quit"}
+        </button>
       </div>
     </>
   );
@@ -373,6 +381,24 @@ export default function QuizComponent({
         </div>
       </div>
     );
+  };
+
+  const saveAndQuit = async () => {
+    setIsSaving(true);
+    try {
+      await axios.post("/api/quizProgress", {
+        email,
+        quizType,
+        activeQuestion,
+        results,
+        quizStartTime,
+      });
+      onExit();
+    } catch (error) {
+      console.error("Error saving quiz progress:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (

@@ -13,4 +13,5 @@ model User {
   email         String? @unique
   quizResults   Json[]
   subscriptions Json[]
+  quizProgress  Json?
 }

@@ -9,6 +9,7 @@ export default function QuizModal({
   setOpen,
   selectedQuiz,
   onStartQuiz,
+  savedQuiz,
 }) {
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -117,6 +118,18 @@ export default function QuizModal({
                       Full PPL Quiz (100 Questions)
                     </button>
                   </div>
+                )}
+
+                {savedQuiz && (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      onStartQuiz(selectedQuiz, true);
+                    }}
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-center mb-4"
+                  >
+                    Resume Quiz
+                  </button>
                 )}
               </DialogPanel>
             </Transition.Child>
