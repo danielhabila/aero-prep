@@ -22,7 +22,7 @@ const Hero = () => {
       />
       <div className="absolute inset-0 bg-[#111827] opacity-70"></div>
       <div className="relative z-10 text-center text-white">
-        <div className="px-4 md:px-6 max-w-[1500px] mx-auto w-[90%]">
+        <div className="px-4 md:px-6 max-w-[1500px] mx-auto sm:w-[90%]">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl/none">
               Pass your TC exams in days not months

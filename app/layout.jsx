@@ -9,11 +9,17 @@ const raleway = Raleway({
 });
 
 export const metadata = {
-  title: "PrepMe",
-  description: "Pass your TC exams with ease",
+  title: "AeroPrep",
+  description: "Pass your TC exams in days not months",
   icons: {
-    icon: "/prepMeFavicon.png",
+    icon: [
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({ children }) {
@@ -21,6 +27,7 @@ export default function RootLayout({ children }) {
     <UserProvider>
       <html lang="en">
         <body
+          suppressHydrationWarning
           className={`${raleway.className} min-h-screen flex flexCol justify-between`}
         >
           <LayoutProvider>{children}</LayoutProvider>

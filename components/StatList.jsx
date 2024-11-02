@@ -35,7 +35,7 @@ export default function StatList() {
 
   if (error) {
     return (
-      <div className="grid place-items-center h3 mt-20 text-gray-400">
+      <div className="grid place-items-center h3 font-medium text-xl mt-20 text-gray-400">
         Error fetching data :(
       </div>
     );
@@ -43,7 +43,7 @@ export default function StatList() {
 
   return (
     <section>
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
         {isLoading ? (
           <div className="grid place-content-center">
             <Loader w={16} h={16} />

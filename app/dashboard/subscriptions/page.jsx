@@ -24,6 +24,7 @@ export default function SubscriptionsPage() {
   const router = useRouter();
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [savedQuiz, setSavedQuiz] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
@@ -33,8 +34,10 @@ export default function SubscriptionsPage() {
             params: { email: user.email },
           });
           setSubscriptions(response.data.subscriptions);
+          setError(false);
         } catch (error) {
           console.error("Error fetching subscriptions:", error);
+          setError(true);
         } finally {
           setIsLoadingSubscriptions(false);
         }
@@ -152,6 +155,16 @@ export default function SubscriptionsPage() {
         title={getQuizTitle(selectedQuiz)}
         onExit={exitQuiz}
       />
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center mt-20">
+        <h2 className="text-2xl font-bold mb-4 text-gray-400">
+          Error fetching data :(
+        </h2>
+      </div>
     );
   }
 

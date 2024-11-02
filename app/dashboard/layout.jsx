@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }) {
 
       <main className="flex-1 overflow-y-auto">
         <DashboardHeader />
-        <div className="py-4 px-6">{children}</div>
+        <div className="py-4">{children}</div>
       </main>
     </div>
   );

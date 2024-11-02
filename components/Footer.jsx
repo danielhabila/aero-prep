@@ -41,7 +41,7 @@ export default function Footer() {
             </a> */}
           </div>
           <p className="text-xs md:text-sm leading-5 text-gray-400 text-center">
-            © {year} PrepMe. All rights reserved
+            © {year} AeroPrep. All rights reserved
           </p>
           <div></div>{" "}
           {/* This empty div helps in keeping the Instagram icon at the far left */}

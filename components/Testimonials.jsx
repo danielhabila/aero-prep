@@ -53,7 +53,7 @@ const testimonials = [
 export default function Testimonials() {
   return (
     <div className="bg-white py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-lg font-semibold leading-8 tracking-tight text-indigo-600">
             Testimonials
@@ -69,7 +69,7 @@ export default function Testimonials() {
                 key={testimonial.id}
                 className="pt-8 sm:inline-block sm:w-full sm:px-4"
               >
-                <figure className="rounded-2xl bg-gray-50 p-8 text-sm leading-6">
+                <figure className="rounded-2xl bg-gray-50 p-6 sm:p-8 text-sm leading-6">
                   <blockquote className="text-gray-900">
                     <p>{`“${testimonial.body}”`}</p>
                   </blockquote>

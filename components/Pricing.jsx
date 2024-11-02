@@ -148,8 +148,8 @@ export default function Pricing() {
   const isPplSubscribed = userSubscriptions.some((sub) => sub.type === "ppl");
 
   return (
-    <div id="pricing" className="  py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl lg:px-8">
+    <div id="pricing" className="py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-base font-semibold leading-7 text-indigo-400">
             Pricing
@@ -188,7 +188,7 @@ export default function Pricing() {
             {tiers.map((tier) => (
               <div
                 key={tier.id}
-                className="ring-1 ring-white/10 rounded-3xl p-8 xl:p-10 hover:bg-white/5 hover:ring-2 "
+                className="ring-1 ring-white/10 rounded-3xl p-6 sm:p-8 xl:p-10 hover:bg-white/5 hover:ring-2 "
               >
                 <div className="flex items-center justify-between gap-x-4">
                   <h3

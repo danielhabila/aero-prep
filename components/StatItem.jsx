@@ -71,7 +71,7 @@ export default function StatItem({ quizResult }) {
               <div className="flex flex-start space-x-4 w-full">
                 <div className="grow">
                   <h2 className="font-semibold text-white mb-2">
-                    <h1>{quizResult.examType || "No exam type"}</h1>
+                    {quizResult.examType || "No exam type"}
                   </h2>
                   <footer className="flex flex-wrap text-sm">
                     <div className="flex items-center after:block after:content-['·'] last:after:content-[''] after:text-sm after:text-slate-300 after:px-2">
