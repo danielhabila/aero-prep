@@ -32,7 +32,7 @@ const tiers = [
     name: "PPL (PPAER)",
     id: "ppl",
     href: "#",
-    price: { "6months": "$60", "12months": "$100" },
+    price: { "6months": "$1", "12months": "$100" },
     description:
       "Comprehensive set of practice questions covering all essential subjects, including navigation, meteorology, general knowledge, and air law.",
     features: [
@@ -188,7 +188,7 @@ export default function Pricing() {
             {tiers.map((tier) => (
               <div
                 key={tier.id}
-                className="ring-1 ring-white/10 rounded-3xl p-6 sm:p-8 xl:p-10 hover:bg-white/5 hover:ring-2 "
+                className="ring-1 ring-white/10 rounded-3xl p-6 sm:p-8 xl:p-10  duration-300 hover:shadow-2xl hover:ring-blue-500 "
               >
                 <div className="flex items-center justify-between gap-x-4">
                   <h3
@@ -222,7 +222,7 @@ export default function Pricing() {
                     className={classNames(
                       isPstarSubscribed
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-white/20 text-white hover:bg-white/30 focus-visible:outline-white",
+                        : "bg-white text-black hover:bg-white/80 focus-visible:outline-white",
                       "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                     )}
                     disabled={isPstarSubscribed}
