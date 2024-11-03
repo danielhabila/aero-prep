@@ -11,6 +11,7 @@ import Loader from "@/components/Loader";
 export default function LayoutProvider({ children }) {
   const pathname = usePathname();
   const isDashboardRoute = pathname.includes("/dashboard");
+  const isSuccessPage = pathname === "/success";
   const { user, isLoading } = useUser();
 
   if (isLoading) {
@@ -23,9 +24,9 @@ export default function LayoutProvider({ children }) {
 
   return (
     <>
-      {!isDashboardRoute && <Navbar user={user} />}
+      {!isDashboardRoute && !isSuccessPage && <Navbar user={user} />}
       {children}
-      {!isDashboardRoute && <Footer />}
+      {!isDashboardRoute && !isSuccessPage && <Footer />}
       <FeedbackButton />
     </>
   );

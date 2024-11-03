@@ -1,7 +1,7 @@
 export default function FeedbackButton() {
   return (
     <a
-      href="mailto:prepme@gmail.com"
+      href="mailto:aeroprepteam@gmail.com"
       target="_blank"
       rel="noreferrer"
       type="button"

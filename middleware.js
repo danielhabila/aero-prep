@@ -20,9 +20,18 @@ export async function middleware(request) {
     }
   }
 
+  if (pathname === "/success") {
+    const sessionId = request.nextUrl.searchParams.get("session_id");
+    const email = request.nextUrl.searchParams.get("email");
+
+    if (!sessionId || !email) {
+      return NextResponse.redirect(new URL("/dashboard/purchase", request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: "/dashboard/:path*",
+  matcher: ["/dashboard/:path*", "/success"],
 };

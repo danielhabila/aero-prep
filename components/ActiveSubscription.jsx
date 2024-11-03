@@ -19,7 +19,12 @@ export default function ActiveSubscription() {
             response.data.subscriptions &&
             response.data.subscriptions.length > 0
           ) {
-            setSubscription(response.data.subscriptions[0]);
+            const paidSubscriptions = response.data.subscriptions.filter(
+              (sub) => sub.type !== "pstar"
+            );
+            if (paidSubscriptions.length > 0) {
+              setSubscription(paidSubscriptions[0]);
+            }
           }
         } catch (error) {
           console.error("Error fetching subscription:", error);

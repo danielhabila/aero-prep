@@ -25,7 +25,8 @@ export async function GET(req) {
       });
 
       if (user) {
-        const subscriptionDuration = session.amount_total === 6000 ? 6 : 12;
+        const subscriptionDuration = session.amount_total === 10000 ? 12 : 6;
+
         await prisma.user.update({
           where: { email },
           data: {
