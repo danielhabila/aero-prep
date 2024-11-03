@@ -43,7 +43,7 @@ export default function StatList() {
 
   return (
     <section>
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         {isLoading ? (
           <div className="grid place-content-center">
             <Loader w={16} h={16} />

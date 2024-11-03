@@ -27,7 +27,7 @@ export default function QuizModal({
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full items-end justify-center text-center sm:items-center ">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -37,7 +37,7 @@ export default function QuizModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <DialogPanel className="relative transform overflow-hidden rounded-lg bg-slate-900 px-4 pb-4 p-5 shadow-2xl transition-all sm:my-8 w-full h-[80vh] mx-8 sm:p-6 flex flex-col justify-center gap-4">
+              <DialogPanel className="relative transform overflow-hidden rounded-lg bg-slate-900 px-4 pb-4 p-5 shadow-2xl transition-all sm:my-8 w-full h-[80vh] m-4 sm:mx-8 sm:p-6 flex flex-col justify-center gap-4">
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
@@ -66,12 +66,12 @@ export default function QuizModal({
                       setOpen(false);
                       onStartQuiz("pstar");
                     }}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-4/6 mx-auto"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-full md:w-4/6 mx-auto"
                   >
                     Start PSTAR Quiz
                   </button>
                 ) : (
-                  <div className="flex flex-col gap-4 w-4/6 mx-auto">
+                  <div className="flex flex-col gap-4 w-full md:w-4/6 mx-auto">
                     <button
                       onClick={() => {
                         setOpen(false);

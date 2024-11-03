@@ -10,6 +10,7 @@ import {
   ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../public/images/prepMeWhite2.png";
+import ActiveSubscription from "./ActiveSubscription";
 
 const navigation = [
   { name: "Subscriptions", href: "/dashboard/subscriptions" },
@@ -90,12 +91,16 @@ export default function MobileNavigation() {
                           ))}
                         </ul>
                       </li>
-                      <li className="mt-auto">
+
+                      <li className="mt-auto mb-4">
+                        <div className="mt-auto space-y-2 mb-20 ">
+                          <ActiveSubscription />
+                        </div>
                         <a
                           href="/api/auth/logout"
                           className="flex items-center p-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-red-400"
                         >
-                          <ArrowLeftEndOnRectangleIcon className="h-6 w-6 mr-3" />
+                          <ArrowLeftEndOnRectangleIcon className="h-6 w-6 mr-3 " />
                           Logout
                         </a>
                       </li>

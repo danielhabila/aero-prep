@@ -12,6 +12,7 @@ import firstSoloImage from "../../../public/images/first-solo.jpeg";
 import pplStudentImage from "../../../public/images/ppl-student.png";
 import QuizComponent from "@/components/QuizComponent";
 import { useRouter } from "next/navigation";
+import ResumeQuizButton from "@/components/ResumeQuizButton";
 
 export default function SubscriptionsPage() {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,7 @@ export default function SubscriptionsPage() {
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [savedQuiz, setSavedQuiz] = useState(null);
   const [error, setError] = useState(false);
+  const [initialQuizState, setInitialQuizState] = useState(null);
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
@@ -85,19 +87,27 @@ export default function SubscriptionsPage() {
     }
   }, [user, isLoading, router]);
 
-  const startQuiz = async (quizType, resume = false) => {
+  const startQuiz = async (quizType, savedQuizData = null) => {
     try {
-      const count = quizType === "pstar" ? 50 : 25;
-      const response = await axios.get("/api/getQuizQuestions", {
-        params: { type: quizType, count: count },
-      });
-      setQuizQuestions(response.data);
-      setShowQuiz(true);
-      if (resume && savedQuiz) {
-        // Set the quiz state based on saved progress
-        setActiveQuestion(savedQuiz.activeQuestion);
-        setResults(savedQuiz.results);
-        // ... set other necessary state
+      if (savedQuizData) {
+        setQuizQuestions(savedQuizData.questions);
+        setShowQuiz(true);
+        setSelectedQuiz(savedQuizData.quizType);
+        setInitialQuizState({
+          activeQuestion: savedQuizData.activeQuestion,
+          results: savedQuizData.results,
+          quizStartTime: savedQuizData.quizStartTime,
+        });
+      } else {
+        const count =
+          quizType === "pstar" ? 50 : quizType === "full" ? 100 : 25;
+        const response = await axios.get("/api/getQuizQuestions", {
+          params: { type: quizType, count: count },
+        });
+        setQuizQuestions(response.data);
+        setShowQuiz(true);
+        setSelectedQuiz(quizType);
+        setInitialQuizState(null);
       }
     } catch (error) {
       console.error("Error fetching quiz questions:", error);
@@ -154,6 +164,7 @@ export default function SubscriptionsPage() {
         quizType={selectedQuiz}
         title={getQuizTitle(selectedQuiz)}
         onExit={exitQuiz}
+        initialState={initialQuizState}
       />
     );
   }
@@ -184,7 +195,11 @@ export default function SubscriptionsPage() {
   }
 
   return (
-    <div className="w-full mx-auto flex flex-wrap justify-evenly items-stretch gap-8 lg:px-4 py-8">
+    <div className="w-full mx-auto flex flex-wrap justify-evenly items-stretch gap-8 px-4 py-8">
+      <ResumeQuizButton
+        email={user.email}
+        onResumeQuiz={(savedQuiz) => startQuiz(null, savedQuiz)}
+      />
       {subscriptions.map((subscription) => (
         <div
           key={subscription.type}

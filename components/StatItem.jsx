@@ -80,7 +80,7 @@ export default function StatItem({ quizResult }) {
                           ? new Date(quizResult.startTime).toLocaleDateString(
                               "en-US",
                               {
-                                month: "long",
+                                month: "short",
                                 day: "numeric",
                                 year: "numeric",
                               }
@@ -99,8 +99,7 @@ export default function StatItem({ quizResult }) {
                                 hour12: false,
                               }
                             )
-                          : "No start time"}{" "}
-                        Local
+                          : "No start time"}
                       </span>
                     </div>
                     <div className="flex items-center after:block after:content-['·'] last:after:content-[''] after:text-sm after:text-slate-300 after:px-2">
@@ -112,11 +111,8 @@ export default function StatItem({ quizResult }) {
                     </div>
                   </footer>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <h1
-                    title="Percentage"
-                    className="flex items-center text-xl font-bold"
-                  >
+                <div className="flex  space-x-2">
+                  <h1 title="Percentage" className="flex  text-xl font-bold">
                     {quizResult.scorePercentage !== undefined &&
                     quizResult.scorePercentage !== null
                       ? quizResult.scorePercentage === 0
@@ -124,7 +120,7 @@ export default function StatItem({ quizResult }) {
                         : `${quizResult.scorePercentage}%`
                       : "N/A"}
                   </h1>
-                  <span className="flex pl-6 h-7 justify-center items-center">
+                  <span className="flex pl-3 h-7 justify-center items-center">
                     {open ? (
                       <ChevronUpIcon className="h-6 w-6" aria-hidden="true" />
                     ) : (
@@ -191,20 +187,39 @@ export default function StatItem({ quizResult }) {
                       (answer, idx) => (
                         <li
                           key={idx}
-                          className={`mb-2 ${
+                          className={`cursor-default tracking-wide font-medium mb-5 py-3 rounded-md border border-gray-700 px-8 ${
                             answer ===
                             quizResult.questions[activeQuestion].correctAnswer
-                              ? "text-green-500"
+                              ? "bg-green-500/20 border-green-500"
                               : answer ===
                                   quizResult.questions[activeQuestion]
                                     .selectedAnswer
-                                ? "text-red-500"
+                                ? "bg-red-500/20 border-red-500"
                                 : ""
                           }`}
                         >
-                          {typeof answer === "string"
-                            ? answer
-                            : JSON.stringify(answer)}
+                          {typeof answer === "string" ? (
+                            <span
+                              className={`${
+                                answer ===
+                                quizResult.questions[activeQuestion]
+                                  .correctAnswer
+                                  ? "text-green-400"
+                                  : answer ===
+                                      quizResult.questions[activeQuestion]
+                                        .selectedAnswer
+                                    ? "text-red-400"
+                                    : "text-gray-300"
+                              }`}
+                            >
+                              {answer}
+                            </span>
+                          ) : (
+                            <PortableText
+                              value={answer}
+                              components={components}
+                            />
+                          )}
                           {answer ===
                             quizResult.questions[activeQuestion]
                               .selectedAnswer &&

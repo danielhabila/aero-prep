@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
   const body = await req.json();
-  const { email, quizType, activeQuestion, results, quizStartTime } = body;
+  const { email, quizType, activeQuestion, questions, results, quizStartTime } =
+    body;
 
   try {
     const user = await prisma.user.findUnique({
@@ -17,6 +18,7 @@ export async function POST(req) {
           quizProgress: {
             quizType,
             activeQuestion,
+            questions,
             results,
             quizStartTime,
           },
@@ -42,13 +44,9 @@ export async function POST(req) {
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const email = searchParams.get("email");
-  const quizType = searchParams.get("quizType");
 
-  if (!email || !quizType) {
-    return NextResponse.json(
-      { error: "Email and quizType are required" },
-      { status: 400 }
-    );
+  if (!email) {
+    return NextResponse.json({ error: "Email is required" }, { status: 400 });
   }
 
   try {
@@ -57,11 +55,7 @@ export async function GET(req) {
       select: { quizProgress: true },
     });
 
-    if (
-      !user ||
-      !user.quizProgress ||
-      user.quizProgress.quizType !== quizType
-    ) {
+    if (!user || !user.quizProgress) {
       return NextResponse.json(
         { error: "No quiz progress found" },
         { status: 404 }
@@ -69,6 +63,35 @@ export async function GET(req) {
     }
 
     return NextResponse.json(user.quizProgress, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req) {
+  const { searchParams } = new URL(req.url);
+  const email = searchParams.get("email");
+
+  if (!email) {
+    return NextResponse.json({ error: "Email is required" }, { status: 400 });
+  }
+
+  try {
+    await prisma.user.update({
+      where: { email },
+      data: {
+        quizProgress: null,
+      },
+    });
+
+    return NextResponse.json(
+      { message: "Quiz progress deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(

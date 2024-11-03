@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import StatCard from "./StatCard";
 import axios from "axios";
-import { PortableText, PortableTextComponents } from "@portabletext/react";
+import { PortableText } from "@portabletext/react";
+
+import RenderResults from "./RenderResults";
 
 const CustomLink = ({ value, children }) => {
   const target = (value?.href || "").startsWith("http") ? "_blank" : undefined;
@@ -67,21 +68,29 @@ const components = {
 };
 
 export default function QuizComponent({
-  questions,
+  questions: initialQuestions,
   email,
   quizType,
   title,
   onExit,
+  initialState,
 }) {
+  const [questions, setQuestions] = useState(initialQuestions);
   // State management
-  const [activeQuestion, setActiveQuestion] = useState(0);
+  const [activeQuestion, setActiveQuestion] = useState(
+    initialState?.activeQuestion || 0
+  );
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
   const [showResults, setShowResults] = useState(false);
-  const [quizStartTime] = useState(new Date().toISOString());
-  const [results, setResults] = useState({
-    answers: Array(questions.length).fill(null),
-  });
+  const [quizStartTime] = useState(
+    initialState?.quizStartTime || new Date().toISOString()
+  );
+  const [results, setResults] = useState(
+    initialState?.results || {
+      answers: Array(questions.length).fill(null),
+    }
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   // Update selected answer when active question changes
@@ -131,16 +140,38 @@ export default function QuizComponent({
       (result) => result && result.selectedAnswer === result.correctAnswer
     ).length;
 
+    const scorePercentage = Math.floor(
+      (correctAnswersCount / questions.length) * 100
+    );
+
+    const isPassed =
+      quizType === "pstar" ? scorePercentage >= 90 : scorePercentage >= 60;
+
     const finalResults = {
       startTime: quizStartTime,
-      examType:
-        quizType === "pstar" ? "Complete Exam - PSTAR" : "Complete Exam - PPL",
+      examType: (() => {
+        switch (quizType) {
+          case "pstar":
+            return "PSTAR Exam";
+          case "pplAirlawPtca":
+            return "PPL Airlaw Exam";
+          case "pplMetPtca":
+            return "PPL Meteorology Exam";
+          case "pplGenPtca":
+            return "PPL General Knowledge Exam";
+          case "pplNavPtca":
+            return "PPL Navigation Exam";
+          case "full":
+            return "PPL Complete Exam";
+          default:
+            return `${quizType.charAt(0).toUpperCase() + quizType.slice(1)} Exam`;
+        }
+      })(),
       numberOfQuestions: questions.length,
-      scorePercentage: Math.floor(
-        (correctAnswersCount / questions.length) * 100
-      ),
+      scorePercentage,
       correctAnswers: correctAnswersCount,
       wrongAnswers: questions.length - correctAnswersCount,
+      passed: isPassed,
       questions: questions.map((q, index) => ({
         question: q.question,
         answers: q.answers,
@@ -149,18 +180,21 @@ export default function QuizComponent({
         selectedAnswer: results.answers[index]?.selectedAnswer || null,
       })),
     };
-    console.log("finalResults", finalResults);
     setShowResults(true);
 
     try {
-      const response = await axios.post("/api/quizResults", {
+      // Save quiz results
+      await axios.post("/api/quizResults", {
         results: finalResults,
         email,
       });
-      if (response.status !== 200)
-        throw new Error("Network response was not ok");
+
+      // Delete saved progress
+      await axios.delete("/api/quizProgress", {
+        params: { email },
+      });
     } catch (error) {
-      console.error("Error saving quiz results:", error);
+      console.error("Error handling quiz completion:", error);
     }
   };
 
@@ -193,7 +227,7 @@ export default function QuizComponent({
   const renderQuestion = () => (
     <>
       {questions[activeQuestion].question && (
-        <h3 className="mb-10 text-2xl font-semibold">
+        <h3 className="mb-10 text-xl font-medium ">
           {typeof questions[activeQuestion].question === "string" ? (
             questions[activeQuestion].question
           ) : (
@@ -227,40 +261,41 @@ export default function QuizComponent({
           {activeQuestion > 0 && (
             <button
               onClick={previousQuestion}
-              className="font-bold px-3 py-1 rounded-lg bg-gray-600 hover:bg-gray-700"
+              className="font-bold px-4 py-1.5 w-32 rounded-full bg-blue-600 hover:bg-blue-700"
             >
-              ← Previous
+              Previous
             </button>
           )}
         </div>
         <button
           onClick={nextQuestion}
-          className="font-bold bg-gray-600 hover:bg-gray-700 px-3 py-1 rounded-lg"
+          className="font-bold bg-blue-600 hover:bg-blue-700 px-4 py-1.5 w-32 rounded-full"
         >
-          {activeQuestion === questions.length - 1 ? "Finish" : "Next →"}
+          {activeQuestion === questions.length - 1 ? "Finish" : "Next"}
         </button>
       </div>
-      <div className="flex flex-col items-center justify-center mt-8">
+      <div className="flex flex-col items-center justify-center mt-16 gap-4">
         {!showResults && (
           <button
             onClick={submitQuiz}
-            className="font-bold bg-white text-black hover:bg-white/80 px-10 py-1.5 rounded-lg w-fit"
+            className="font-bold bg-white text-black hover:bg-white/80 px-10 py-1.5 rounded-full w-full"
           >
             Finish Attempt
           </button>
         )}
-        <button
-          onClick={onExit}
-          className="mt-10 font-bold bg-red-500 text-white px-16 py-1.5 w-fit rounded-lg hover:bg-red-600 transition-colors"
-        >
-          Exit Quiz
-        </button>
+
         <button
           onClick={saveAndQuit}
           disabled={isSaving}
-          className="mt-10 font-bold bg-yellow-500 text-white px-16 py-1.5 w-fit rounded-lg hover:bg-yellow-600 transition-colors mr-4"
+          className=" font-bold bg-yellow-500 text-white px-16 py-1.5 w-full rounded-full hover:bg-yellow-600 transition-colors "
         >
           {isSaving ? "Saving..." : "Save and Quit"}
+        </button>
+        <button
+          onClick={onExit}
+          className=" font-bold bg-red-500 text-white px-16 py-1.5 w-full rounded-full hover:bg-red-600 transition-colors"
+        >
+          Exit Quiz
         </button>
       </div>
     </>
@@ -273,116 +308,7 @@ export default function QuizComponent({
     }
   }, [showResults]);
 
-  const renderResults = () => {
-    const correctAnswersCount = results.answers.filter(
-      (result) => result && result.selectedAnswer === result.correctAnswer
-    ).length;
-
-    const restartQuiz = () => {
-      setActiveQuestion(0);
-      setSelectedAnswer("");
-      setSelectedAnswerIndex(null);
-      setShowResults(false);
-      setResults({
-        answers: Array(questions.length).fill(null),
-      });
-    };
-
-    return (
-      <div className="text-center">
-        <h1 title="Percentage" className="md:text-6xl text-4xl font-bold mb-10">
-          You scored{" "}
-          {`${Math.floor((correctAnswersCount / questions.length) * 100)}%`}
-        </h1>
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-10">
-          <StatCard title="Total Questions" value={questions.length} />
-          <StatCard title="Correct Answers" value={correctAnswersCount} />
-          <StatCard
-            title="Wrong Answers / Unanswered"
-            value={questions.length - correctAnswersCount}
-          />
-        </div>
-        <div className="mt-10 ">
-          <div className="flex flex-wrap gap-2 mb-10">
-            {results.answers.map((result, idx) => (
-              <button
-                key={idx}
-                onClick={() => goToQuestion(idx)}
-                className={`mm-0.5 h-10 w-10 rounded-full ${
-                  result && result.selectedAnswer === result.correctAnswer
-                    ? "bg-green-500"
-                    : "bg-red-500"
-                } ${activeQuestion === idx && "border-2 border-slate-100"}`}
-              >
-                {idx + 1}
-              </button>
-            ))}
-          </div>
-          <div className="space-y-8">
-            <p className="font-semibold text-xl mb-5">
-              {typeof questions[activeQuestion].question === "string" ? (
-                questions[activeQuestion].question
-              ) : (
-                <PortableText
-                  value={questions[activeQuestion].question}
-                  components={components}
-                />
-              )}
-            </p>
-            <ul>
-              {questions[activeQuestion].answers.map((answer, idx) => (
-                <li
-                  key={idx}
-                  className={`mb-2 ${
-                    answer === questions[activeQuestion].correctAnswer
-                      ? "text-green-500"
-                      : answer ===
-                          results.answers[activeQuestion]?.selectedAnswer
-                        ? "text-red-500"
-                        : ""
-                  }`}
-                >
-                  {typeof answer === "string" ? (
-                    answer
-                  ) : (
-                    <PortableText value={answer} components={components} />
-                  )}
-                </li>
-              ))}
-            </ul>
-            {questions[activeQuestion].explanation && (
-              <div className="mt-4 text-left">
-                <h4 className="font-bold mb-2">Explanation:</h4>
-                {typeof questions[activeQuestion].explanation === "string" ? (
-                  <p>{questions[activeQuestion].explanation}</p>
-                ) : (
-                  <PortableText
-                    value={questions[activeQuestion].explanation}
-                    components={components}
-                  />
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex justify-center gap-10">
-          <button
-            onClick={restartQuiz}
-            className="mt-10 font-bold uppercase bg-white text-black px-4 py-2 rounded-lg hover:bg-white/80 transition-colors"
-          >
-            Restart Quiz
-          </button>
-          <button
-            onClick={onExit}
-            className="mt-10 font-bold bg-red-500 text-white px-10 py-1.5 w-fit rounded-lg hover:bg-red-600 transition-colors"
-          >
-            Exit Quiz
-          </button>
-        </div>
-      </div>
-    );
-  };
-
+  // Define the saveAndQuit function
   const saveAndQuit = async () => {
     setIsSaving(true);
     try {
@@ -390,6 +316,7 @@ export default function QuizComponent({
         email,
         quizType,
         activeQuestion,
+        questions,
         results,
         quizStartTime,
       });
@@ -398,6 +325,25 @@ export default function QuizComponent({
       console.error("Error saving quiz progress:", error);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const fetchNewQuiz = async () => {
+    try {
+      const count = quizType === "pstar" ? 50 : quizType === "full" ? 100 : 25;
+      const response = await axios.get("/api/getQuizQuestions", {
+        params: { type: quizType, count: count },
+      });
+      setQuestions(response.data);
+      setActiveQuestion(0);
+      setSelectedAnswer("");
+      setSelectedAnswerIndex(null);
+      setShowResults(false);
+      setResults({
+        answers: Array(response.data.length).fill(null),
+      });
+    } catch (error) {
+      console.error("Error fetching new quiz questions:", error);
     }
   };
 
@@ -420,7 +366,20 @@ export default function QuizComponent({
             {renderQuestion()}
           </>
         ) : (
-          renderResults()
+          <RenderResults
+            results={results}
+            questions={questions}
+            quizType={quizType}
+            activeQuestion={activeQuestion}
+            setActiveQuestion={setActiveQuestion}
+            setSelectedAnswer={setSelectedAnswer}
+            setSelectedAnswerIndex={setSelectedAnswerIndex}
+            setShowResults={setShowResults}
+            setResults={setResults}
+            components={components}
+            onExit={onExit}
+            fetchNewQuiz={fetchNewQuiz}
+          />
         )}
       </div>
     </div>
