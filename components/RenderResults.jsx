@@ -66,7 +66,7 @@ export default function RenderResults({
         />
       </div>
       <div className="mt-10">
-        <div className="flex flex-wrap justify-center gap-2 mb-10 ">
+        <div className="flex flex-wrap gap-2 mb-10 ">
           {results.answers.map((result, idx) => (
             <button
               key={idx}
