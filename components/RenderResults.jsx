@@ -30,15 +30,24 @@ export default function RenderResults({
     await fetchNewQuiz();
   };
 
+  const scrollToQuestion = () => {
+    const questionElement = document.getElementById("question-container");
+    if (questionElement) {
+      questionElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const previousQuestion = () => {
     if (activeQuestion > 0) {
       setActiveQuestion((prev) => prev - 1);
+      setTimeout(scrollToQuestion, 100);
     }
   };
 
   const nextQuestion = () => {
     if (activeQuestion < questions.length - 1) {
       setActiveQuestion((prev) => prev + 1);
+      setTimeout(scrollToQuestion, 100);
     }
   };
 
@@ -70,7 +79,10 @@ export default function RenderResults({
           {results.answers.map((result, idx) => (
             <button
               key={idx}
-              onClick={() => setActiveQuestion(idx)}
+              onClick={() => {
+                setActiveQuestion(idx);
+                setTimeout(scrollToQuestion, 100);
+              }}
               className={`mm-0.5 h-10 w-10 rounded-full ${
                 result && result.selectedAnswer === result.correctAnswer
                   ? "bg-green-500"
@@ -81,7 +93,13 @@ export default function RenderResults({
             </button>
           ))}
         </div>
-        <div className="space-y-8">
+        <div id="question-container" className="space-y-8 pt-4">
+          <div className="flex justify-start mb-10 w-fit bg-blue-700 text-white px-4 rounded-md py-1 text-lg font-medium ">
+            <h2>
+              Question: {activeQuestion + 1}
+              <span>/{questions.length}</span>
+            </h2>
+          </div>
           <p className="font-medium text-xl mb-5 text-left">
             {typeof questions[activeQuestion].question === "string" ? (
               questions[activeQuestion].question
