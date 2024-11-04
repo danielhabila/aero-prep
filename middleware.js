@@ -4,6 +4,21 @@ import { getSession } from "@auth0/nextjs-auth0/edge";
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
+  if (pathname === "/api/direct-checkout") {
+    try {
+      const session = await getSession(request);
+      if (!session || !session.user) {
+        const loginUrl = new URL("/api/auth/login", request.url);
+        loginUrl.searchParams.set("returnTo", pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+      return NextResponse.next();
+    } catch (error) {
+      console.error("Error in middleware:", error);
+      return NextResponse.redirect(new URL("/dashboard/purchase", request.url));
+    }
+  }
+
   if (pathname.startsWith("/dashboard")) {
     try {
       const session = await getSession(request);
@@ -33,5 +48,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/success"],
+  matcher: ["/dashboard/:path*", "/success", "/api/direct-checkout"],
 };

@@ -20,12 +20,32 @@ export async function GET(req) {
     }
 
     const now = new Date();
-    const validSubscriptions = user.subscriptions.filter((sub) => {
-      if (sub.type === "pstar") return true; // PSTAR is always valid
-      const endDate = new Date(sub.startDate);
-      endDate.setMonth(endDate.getMonth() + sub.duration);
-      return endDate > now;
+    let validSubscriptions = [];
+    let subscriptionsToRemove = [];
+
+    // Filter subscriptions and identify expired ones
+    user.subscriptions.forEach((sub) => {
+      if (sub.type === "pstar") {
+        validSubscriptions.push(sub);
+      } else {
+        const endDate = new Date(sub.endDate);
+        if (endDate > now) {
+          validSubscriptions.push(sub);
+        } else {
+          subscriptionsToRemove.push(sub);
+        }
+      }
     });
+
+    // If there are expired subscriptions, update the user's subscription array
+    if (subscriptionsToRemove.length > 0) {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          subscriptions: validSubscriptions,
+        },
+      });
+    }
 
     return NextResponse.json(
       { subscriptions: validSubscriptions },

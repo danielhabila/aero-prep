@@ -3,8 +3,12 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+const getPriceForDuration = (duration) => {
+  return duration === "12months" ? 100 : 60;
+};
+
 export async function POST(req) {
-  const { price, email } = await req.json();
+  const { duration, email } = await req.json();
 
   if (!email) {
     return NextResponse.json(
@@ -14,6 +18,7 @@ export async function POST(req) {
   }
 
   try {
+    const price = getPriceForDuration(duration);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -34,7 +39,9 @@ export async function POST(req) {
       client_reference_id: email,
       metadata: {
         email: email,
+        duration: duration,
       },
+      customer_email: email,
     });
 
     return NextResponse.json({ sessionId: session.id });

@@ -32,7 +32,7 @@ const tiers = [
     name: "PPL (PPAER)",
     id: "ppl",
     href: "#",
-    price: { "6months": "$1", "12months": "$100" },
+    price: { "6months": "$60", "12months": "$100" },
     description:
       "Comprehensive set of practice questions covering all essential subjects, including navigation, meteorology, general knowledge, and air law.",
     features: [
@@ -51,18 +51,18 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-const PurchaseButton = ({ price, disabled, user }) => {
+const PurchaseButton = ({ price, disabled, user, frequency }) => {
   const handleClick = async () => {
     if (!user) {
-      // Redirect to login page if user is not logged in
-      window.location.href = "/api/auth/login?returnTo=/dashboard/purchase";
+      localStorage.setItem("pendingSubscriptionDuration", frequency);
+      window.location.href = `/api/auth/login?returnTo=/api/direct-checkout?duration=${frequency}`;
       return;
     }
 
     try {
       const stripe = await stripePromise;
       const response = await axios.post("/api/create-checkout-session", {
-        price,
+        duration: frequency,
         email: user.email,
       });
       const { sessionId } = response.data;
@@ -106,7 +106,6 @@ export default function Pricing() {
   const { user } = useUser();
 
   const handleQuizSelection = async (quizType, userEmail) => {
-    console.log("userEmail", userEmail, "quizType", quizType);
     try {
       const response = await axios.post("/api/updateSubscription", {
         email: userEmail,
@@ -236,6 +235,7 @@ export default function Pricing() {
                     )}
                     disabled={isPplSubscribed}
                     user={user}
+                    frequency={frequency.value}
                   />
                 )}
                 <ul

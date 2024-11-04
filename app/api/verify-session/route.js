@@ -25,7 +25,10 @@ export async function GET(req) {
       });
 
       if (user) {
-        const subscriptionDuration = session.amount_total === 10000 ? 12 : 6;
+        const duration = session.metadata.duration === "12months" ? 12 : 6;
+        const startDate = new Date();
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + duration);
 
         await prisma.user.update({
           where: { email },
@@ -33,8 +36,9 @@ export async function GET(req) {
             subscriptions: {
               push: {
                 type: "ppl",
-                startDate: new Date().toISOString(),
-                duration: subscriptionDuration,
+                startDate: startDate.toISOString(),
+                duration: duration,
+                endDate: endDate.toISOString(),
               },
             },
           },

@@ -13,6 +13,7 @@ export default function RenderResults({
   components,
   onExit,
   fetchNewQuiz,
+  isStats = false,
 }) {
   const correctAnswersCount = results.answers.filter(
     (result) => result && result.selectedAnswer === result.correctAnswer
@@ -47,7 +48,7 @@ export default function RenderResults({
         <Image
           src={isPassed ? passImage : failImage}
           alt={isPassed ? "Pass" : "Fail"}
-          className={`mx-auto md:w-28 w-20 bg-${isPassed ? "green" : "red"}-500 rounded-full p-1`}
+          className={`mx-auto md:w-24 w-20 bg-${isPassed ? "green" : "red"}-500 rounded-full p-1`}
         />
       </div>
       <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-4">
@@ -165,20 +166,22 @@ export default function RenderResults({
           Next
         </button>
       </div>
-      <div className="flex flex-col items-center justify-center gap-4">
-        <button
-          onClick={restartQuiz}
-          className="mt-10 font-bold w-full bg-white text-black px-4 py-2 rounded-full hover:bg-white/80 transition-colors"
-        >
-          Restart Quiz
-        </button>
-        <button
-          onClick={onExit}
-          className=" font-bold bg-red-600 text-white px-4 py-2 w-full rounded-full hover:bg-red-700 transition-colors"
-        >
-          Exit Quiz
-        </button>
-      </div>
+      {!isStats && (
+        <div className="flex flex-col items-center justify-center gap-4">
+          <button
+            onClick={restartQuiz}
+            className="mt-10 font-bold w-full bg-white text-black px-4 py-2 rounded-full hover:bg-white/80 transition-colors"
+          >
+            Restart Quiz
+          </button>
+          <button
+            onClick={onExit}
+            className="font-bold bg-red-600 text-white px-4 py-2 w-full rounded-full hover:bg-red-700 transition-colors"
+          >
+            Exit Quiz
+          </button>
+        </div>
+      )}
     </div>
   );
 }

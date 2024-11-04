@@ -53,7 +53,7 @@ export default function SuccessPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-12 md:py-24 px-4">
-      <div className="flex flex-col items-center justify-center space-y-4 p-10 shadow-lg rounded-lg bg-black/20">
+      <div className="flex flex-col items-center justify-center space-y-10 p-16 shadow-lg rounded-lg bg-black/30">
         <CheckCircleIcon className="h-14 w-14 text-green-500" />
         <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
           Payment successful

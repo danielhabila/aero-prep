@@ -5,7 +5,7 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import StatCard from "./StatCard";
+import RenderResults from "./RenderResults";
 import { PortableText } from "@portabletext/react";
 
 const components = {
@@ -60,7 +60,34 @@ const components = {
 export default function StatItem({ quizResult }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
 
-  const goToQuestion = (idx) => setActiveQuestion(idx);
+  const transformedData = {
+    results: {
+      answers: quizResult.questions.map((q) => ({
+        selectedAnswer: q.selectedAnswer,
+        correctAnswer: q.correctAnswer,
+      })),
+    },
+    questions: quizResult.questions,
+  };
+
+  const getQuizType = (examType) => {
+    switch (examType) {
+      case "PSTAR Exam":
+        return "pstar";
+      case "PPL Airlaw Exam":
+        return "pplAirlawPtca";
+      case "PPL Meteorology Exam":
+        return "pplMetPtca";
+      case "PPL General Knowledge Exam":
+        return "pplGenPtca";
+      case "PPL Navigation Exam":
+        return "pplNavPtca";
+      case "PPL Complete Exam":
+        return "full";
+      default:
+        return "other";
+    }
+  };
 
   return (
     <Disclosure as="div" className="pt-3">
@@ -133,130 +160,19 @@ export default function StatItem({ quizResult }) {
           </dt>
           <DisclosurePanel
             as="dd"
-            className="mt-2 py-2 md:px-12 px-4 ring-1 ring-white/20 rounded-md bg-slate-800/20"
+            className="mt-2 py-8 md:px-12 px-4 ring-1 ring-white/20 rounded-md bg-slate-800/20"
           >
-            <div className="text-base text-gray-300">
-              <div className="flex flex-col items-center mb-8">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl">
-                  <StatCard
-                    title="Total Questions"
-                    value={quizResult.numberOfQuestions}
-                  />
-                  <StatCard
-                    title="Correct Answers"
-                    value={quizResult.correctAnswers}
-                  />
-                  <StatCard
-                    title="Wrong / Unanswered"
-                    value={quizResult.wrongAnswers}
-                  />
-                </div>
-              </div>
-              <div className="mt-10">
-                <div className="flex justify-center flex-wrap gap-2 mb-6">
-                  {quizResult?.questions?.map((question, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => goToQuestion(idx)}
-                      className={`w-8 h-8 rounded-full ${
-                        question.selectedAnswer === question.correctAnswer
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                      } ${activeQuestion === idx ? "ring-2 ring-white" : ""} text-white font-bold`}
-                    >
-                      {idx + 1}
-                    </button>
-                  ))}
-                </div>
-                <div className="space-y-8">
-                  <div className="font-medium text-lg mb-5">
-                    {typeof quizResult?.questions?.[activeQuestion]
-                      ?.question === "string" ? (
-                      <p>{quizResult?.questions?.[activeQuestion]?.question}</p>
-                    ) : (
-                      <PortableText
-                        value={
-                          quizResult?.questions?.[activeQuestion]?.question
-                        }
-                        components={components}
-                      />
-                    )}
-                  </div>
-                  <ul>
-                    {quizResult?.questions?.[activeQuestion]?.answers?.map(
-                      (answer, idx) => (
-                        <li
-                          key={idx}
-                          className={`cursor-default tracking-wide font-medium mb-5 py-3 rounded-md border border-gray-700 px-8 ${
-                            answer ===
-                            quizResult.questions[activeQuestion].correctAnswer
-                              ? "bg-green-500/20 border-green-500"
-                              : answer ===
-                                  quizResult.questions[activeQuestion]
-                                    .selectedAnswer
-                                ? "bg-red-500/20 border-red-500"
-                                : ""
-                          }`}
-                        >
-                          {typeof answer === "string" ? (
-                            <span
-                              className={`${
-                                answer ===
-                                quizResult.questions[activeQuestion]
-                                  .correctAnswer
-                                  ? "text-green-400"
-                                  : answer ===
-                                      quizResult.questions[activeQuestion]
-                                        .selectedAnswer
-                                    ? "text-red-400"
-                                    : "text-gray-300"
-                              }`}
-                            >
-                              {answer}
-                            </span>
-                          ) : (
-                            <PortableText
-                              value={answer}
-                              components={components}
-                            />
-                          )}
-                          {answer ===
-                            quizResult.questions[activeQuestion]
-                              .selectedAnswer &&
-                            answer !==
-                              quizResult.questions[activeQuestion]
-                                .correctAnswer && (
-                              <span className="ml-2 text-red-500">
-                                (Your answer)
-                              </span>
-                            )}
-                        </li>
-                      )
-                    )}
-                  </ul>
-                  {quizResult.questions &&
-                    quizResult.questions[activeQuestion] &&
-                    quizResult.questions[activeQuestion].explanation && (
-                      <div className="mt-4 text-left">
-                        <h4 className="font-bold mb-2">Explanation:</h4>
-                        {typeof quizResult.questions[activeQuestion]
-                          .explanation === "string" ? (
-                          <p>
-                            {quizResult.questions[activeQuestion].explanation}
-                          </p>
-                        ) : (
-                          <PortableText
-                            value={
-                              quizResult.questions[activeQuestion].explanation
-                            }
-                            components={components}
-                          />
-                        )}
-                      </div>
-                    )}
-                </div>
-              </div>
-            </div>
+            <RenderResults
+              results={transformedData.results}
+              questions={transformedData.questions}
+              quizType={getQuizType(quizResult.examType)}
+              activeQuestion={activeQuestion}
+              setActiveQuestion={setActiveQuestion}
+              components={components}
+              onExit={() => {}}
+              fetchNewQuiz={() => {}}
+              isStats={true}
+            />
           </DisclosurePanel>
         </>
       )}

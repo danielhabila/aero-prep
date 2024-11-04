@@ -37,10 +37,9 @@ export default function ActiveSubscription() {
     }
   }, [user, isLoading]);
 
-  const calculateDaysRemaining = (startDate, duration) => {
-    if (!startDate || !duration) return null;
-    const start = new Date(startDate);
-    const end = new Date(start.setMonth(start.getMonth() + duration));
+  const calculateDaysRemaining = (endDate) => {
+    if (!endDate) return null;
+    const end = new Date(endDate);
     const now = new Date();
     const daysRemaining = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
     return daysRemaining > 0 ? daysRemaining : 0;
@@ -65,11 +64,7 @@ export default function ActiveSubscription() {
           </p>
           {subscription.type !== "pstar" && (
             <p className="text-gray-400 text-sm">
-              Days remaining:{" "}
-              {calculateDaysRemaining(
-                subscription.startDate,
-                subscription.duration
-              )}{" "}
+              Days remaining: {calculateDaysRemaining(subscription.endDate)}{" "}
               days
             </p>
           )}

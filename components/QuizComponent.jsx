@@ -205,7 +205,7 @@ export default function QuizComponent({
 
   // Render functions
   const renderQuestionNavigation = () => (
-    <div className="hidden mb-14 md:flex md:flex-wrap md:gap-1">
+    <div className=" mb-14 flex-wrap gap-1">
       {questions.map((_, idx) => (
         <button
           key={idx}
@@ -356,12 +356,12 @@ export default function QuizComponent({
 
         {!showResults ? (
           <>
-            <div className="flex justify-start mb-10 w-fit bg-blue-700 text-white px-4 rounded-md py-1 text-lg font-medium md:hidden">
+            {/* <div className="flex justify-start mb-10 w-fit bg-blue-700 text-white px-4 rounded-md py-1 text-lg font-medium md:hidden">
               <h2>
                 Question: {activeQuestion + 1}
                 <span>/{questions.length}</span>
               </h2>
-            </div>
+            </div> */}
             {renderQuestionNavigation()}
             {renderQuestion()}
           </>

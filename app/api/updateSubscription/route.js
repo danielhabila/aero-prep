@@ -33,6 +33,12 @@ export async function POST(req) {
             type: quizType,
             startDate: new Date().toISOString(),
             duration: quizType === "pstar" ? null : 6,
+            endDate:
+              quizType === "pstar"
+                ? null
+                : new Date(
+                    new Date().setMonth(new Date().getMonth() + 6)
+                  ).toISOString(),
           },
         },
       },
