@@ -13,11 +13,6 @@ const nextConfig = {
     };
     return config;
   },
-  experimental: {
-    serverActions: {
-      allowedOrigins: ["localhost:3000", process.env.NEXT_PUBLIC_URL],
-    },
-  },
 };
 
 export default nextConfig;

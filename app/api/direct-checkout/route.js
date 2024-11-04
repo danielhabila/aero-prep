@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import { getSession } from "@auth0/nextjs-auth0";
 import { prisma } from "@/lib/prisma";
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
