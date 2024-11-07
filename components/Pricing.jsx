@@ -150,11 +150,11 @@ export default function Pricing() {
     <div id="pricing" className="py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-indigo-400">
+          {/* <h2 className="text-base font-semibold leading-7 text-indigo-400">
             Pricing
-          </h2>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Simple no-tricks pricing
+          </h2> */}
+          <p className="mt-2 text-3xl font-bold tracking-tight text-indigo-400 sm:text-4xl">
+            Practice Exams
           </p>
         </div>
         <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-gray-300">
@@ -211,14 +211,38 @@ export default function Pricing() {
                   )}
                 </p>
                 {tier.id === "pStar" ? (
-                  <Link
-                    href="/api/auth/login?returnTo=/dashboard/subscriptions"
-                    aria-describedby={tier.id}
+                  <button
+                    onClick={async () => {
+                      if (!user) {
+                        window.location.href =
+                          "/api/auth/login?returnTo=/dashboard/subscriptions";
+                        return;
+                      }
+
+                      try {
+                        const response = await axios.post(
+                          "/api/updateSubscription",
+                          {
+                            email: user.email,
+                            quizType: "pstar",
+                          }
+                        );
+
+                        if (
+                          response.status === 200 ||
+                          response.status === 409
+                        ) {
+                          window.location.href = "/dashboard/subscriptions";
+                        }
+                      } catch (error) {
+                        console.error("Error updating subscription:", error);
+                      }
+                    }}
                     className={classNames(
                       isPstarSubscribed
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-white text-black hover:bg-white/80 focus-visible:outline-white",
-                      "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                      "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 w-full"
                     )}
                     disabled={isPstarSubscribed}
                   >
@@ -227,7 +251,7 @@ export default function Pricing() {
                       : user
                         ? "Start"
                         : "Login to Start"}
-                  </Link>
+                  </button>
                 ) : (
                   <PurchaseButton
                     price={parseFloat(
