@@ -12,11 +12,12 @@ export default function ResumeQuizButton({ email, onResumeQuiz }) {
         const response = await axios.get("/api/quizProgress", {
           params: { email },
         });
-        setSavedQuiz(response.data);
+        setSavedQuiz(response.data.quizProgress);
       } catch (error) {
         if (error.response?.status !== 404) {
           console.error("Error fetching saved quiz:", error);
         }
+        setSavedQuiz(null);
       } finally {
         setIsLoading(false);
       }
@@ -27,7 +28,7 @@ export default function ResumeQuizButton({ email, onResumeQuiz }) {
     }
   }, [email]);
 
-  if (isLoading || !savedQuiz) return null;
+  if (isLoading || !savedQuiz || !savedQuiz.quizType) return null;
 
   const getQuizTitle = (quizType) => {
     switch (quizType) {

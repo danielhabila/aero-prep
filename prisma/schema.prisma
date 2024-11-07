@@ -8,10 +8,10 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(cuid()) @map("_id")
-  username      String?
-  email         String? @unique
-  quizResults   Json[]
-  subscriptions Json[]
+  id            String @id @default(cuid()) @map("_id")
+  email         String @unique
+  username      String
+  subscriptions Json[] @default([])
+  quizResults   Json[] @default([])
   quizProgress  Json?
 }

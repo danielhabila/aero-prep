@@ -212,12 +212,8 @@ export default function Pricing() {
                 </p>
                 {tier.id === "pStar" ? (
                   <Link
-                    href={isPstarSubscribed ? "#" : "/dashboard/subscriptions"}
+                    href="/api/auth/login?returnTo=/dashboard/subscriptions"
                     aria-describedby={tier.id}
-                    onClick={() =>
-                      !isPstarSubscribed &&
-                      handleQuizSelection("pstar", user.email)
-                    }
                     className={classNames(
                       isPstarSubscribed
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -226,7 +222,11 @@ export default function Pricing() {
                     )}
                     disabled={isPstarSubscribed}
                   >
-                    {isPstarSubscribed ? "Subscribed" : "Start"}
+                    {isPstarSubscribed
+                      ? "Subscribed"
+                      : user
+                        ? "Start"
+                        : "Login to Start"}
                   </Link>
                 ) : (
                   <PurchaseButton

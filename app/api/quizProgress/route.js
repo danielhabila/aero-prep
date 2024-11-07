@@ -55,14 +55,14 @@ export async function GET(req) {
       select: { quizProgress: true },
     });
 
-    if (!user || !user.quizProgress) {
-      return NextResponse.json(
-        { error: "No quiz progress found" },
-        { status: 404 }
-      );
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user.quizProgress, { status: 200 });
+    return NextResponse.json(
+      { quizProgress: user.quizProgress },
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(

@@ -19,12 +19,15 @@ export async function GET(req) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Ensure subscriptions is initialized as an empty array if it's null/undefined
+    const subscriptions = user.subscriptions || [];
+
     const now = new Date();
     let validSubscriptions = [];
     let subscriptionsToRemove = [];
 
     // Filter subscriptions and identify expired ones
-    user.subscriptions.forEach((sub) => {
+    subscriptions.forEach((sub) => {
       if (sub.type === "pstar") {
         validSubscriptions.push(sub);
       } else {
@@ -52,7 +55,7 @@ export async function GET(req) {
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    console.error("Error in check-subscription:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

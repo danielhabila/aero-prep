@@ -26,16 +26,28 @@ export default function SubscriptionsPage() {
   const [initialQuizState, setInitialQuizState] = useState(null);
 
   useEffect(() => {
-    const fetchSubscriptions = async () => {
+    const initializeUser = async () => {
       if (user && user.email) {
         try {
-          const response = await axios.get("/api/check-subscription", {
-            params: { email: user.email },
+          // First ensure user exists in database and get the response
+          const userResponse = await axios.post("/api/checkUser", {
+            username: user.nickname,
+            email: user.email,
           });
-          setSubscriptions(response.data.subscriptions);
-          setError(false);
+
+          // Only fetch subscriptions if user creation/verification was successful
+          if (userResponse.status === 200 || userResponse.status === 201) {
+            const subsResponse = await axios.get("/api/check-subscription", {
+              params: { email: user.email },
+            });
+            setSubscriptions(subsResponse.data.subscriptions);
+            setError(false);
+          }
         } catch (error) {
-          console.error("Error fetching subscriptions:", error);
+          console.error(
+            "Error initializing user or fetching subscriptions:",
+            error
+          );
           setError(true);
         } finally {
           setIsLoadingSubscriptions(false);
@@ -54,7 +66,7 @@ export default function SubscriptionsPage() {
             params: { session_id: sessionId, email: user.email },
           });
           if (response.status === 200) {
-            await fetchSubscriptions();
+            await initializeUser();
           }
         } catch (error) {
           console.error("Error verifying Stripe session:", error);
@@ -78,8 +90,8 @@ export default function SubscriptionsPage() {
       }
     };
 
-    if (!isLoading && user) {
-      fetchSubscriptions();
+    if (!isLoading) {
+      initializeUser();
       verifyStripeSession();
     }
   }, [user, isLoading, router]);
