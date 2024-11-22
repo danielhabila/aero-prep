@@ -74,6 +74,7 @@ export default function QuizComponent({
   title,
   onExit,
   initialState,
+  studyMode,
 }) {
   const [questions, setQuestions] = useState(initialQuestions);
   // State management
@@ -92,6 +93,11 @@ export default function QuizComponent({
     }
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [answeredQuestions, setAnsweredQuestions] = useState(
+    new Set(initialState?.answeredQuestions || [])
+  );
 
   // Update selected answer when active question changes
   useEffect(() => {
@@ -101,34 +107,67 @@ export default function QuizComponent({
       setSelectedAnswerIndex(
         questions[activeQuestion].answers.indexOf(currentAnswer.selectedAnswer)
       );
+      if (studyMode && answeredQuestions.has(activeQuestion)) {
+        setShowAnswer(true);
+        setIsCorrect(
+          currentAnswer.selectedAnswer ===
+            questions[activeQuestion].correctAnswer
+        );
+      } else {
+        setShowAnswer(false);
+        setIsCorrect(null);
+      }
     } else {
       setSelectedAnswer("");
       setSelectedAnswerIndex(null);
+      setShowAnswer(false);
+      setIsCorrect(null);
     }
-  }, [activeQuestion, results.answers, questions]);
+  }, [
+    activeQuestion,
+    results.answers,
+    questions,
+    studyMode,
+    answeredQuestions,
+  ]);
 
   // Handle answer selection
   const onAnswerSelected = (answer, idx) => {
-    setSelectedAnswer(answer);
-    setSelectedAnswerIndex(idx);
-    setResults((prev) => ({
-      ...prev,
-      answers: prev.answers.map((a, i) =>
-        i === activeQuestion
-          ? {
-              question: questions[activeQuestion].question,
-              selectedAnswer: answer,
-              correctAnswer: questions[activeQuestion].correctAnswer,
-            }
-          : a
-      ),
-    }));
+    if (!showAnswer) {
+      setSelectedAnswer(answer);
+      setSelectedAnswerIndex(idx);
+
+      if (studyMode) {
+        setShowAnswer(true);
+        setIsCorrect(answer === questions[activeQuestion].correctAnswer);
+        setAnsweredQuestions((prev) => new Set([...prev, activeQuestion]));
+      }
+
+      setResults((prev) => ({
+        ...prev,
+        answers: prev.answers.map((a, i) =>
+          i === activeQuestion
+            ? {
+                question: questions[activeQuestion].question,
+                selectedAnswer: answer,
+                correctAnswer: questions[activeQuestion].correctAnswer,
+              }
+            : a
+        ),
+      }));
+    }
   };
 
   // Grade current question and move to next
   const nextQuestion = () => {
     if (activeQuestion < questions.length - 1) {
       setActiveQuestion((prev) => prev + 1);
+      if (!studyMode) {
+        setShowAnswer(false);
+        setIsCorrect(null);
+        setSelectedAnswer("");
+        setSelectedAnswerIndex(null);
+      }
     } else {
       submitQuiz();
     }
@@ -199,8 +238,17 @@ export default function QuizComponent({
   };
 
   // Navigation functions
-  const previousQuestion = () =>
-    activeQuestion > 0 && setActiveQuestion((prev) => prev - 1);
+  const previousQuestion = () => {
+    if (activeQuestion > 0) {
+      setActiveQuestion((prev) => prev - 1);
+      if (!studyMode) {
+        setShowAnswer(false);
+        setIsCorrect(null);
+        setSelectedAnswer("");
+        setSelectedAnswerIndex(null);
+      }
+    }
+  };
   const goToQuestion = (index) => setActiveQuestion(index);
 
   // Render functions
@@ -242,11 +290,19 @@ export default function QuizComponent({
         {questions[activeQuestion].answers.map((answer, idx) => (
           <li
             key={idx}
-            onClick={() => onAnswerSelected(answer, idx)}
-            className={`cursor-pointer tracking-wide font-medium mb-5 py-3 rounded-md border border-gray-700 hover:bg-gray-600 px-8 ${
-              selectedAnswerIndex === idx &&
-              "bg-slate-100 hover:bg-slate-100 text-dark hover:text-black"
-            }`}
+            onClick={() => !showAnswer && onAnswerSelected(answer, idx)}
+            className={`cursor-pointer tracking-wide font-medium mb-5 py-3 rounded-md border px-8 
+              ${
+                studyMode && showAnswer && answeredQuestions.has(activeQuestion)
+                  ? answer === questions[activeQuestion].correctAnswer
+                    ? "bg-green-500/20 border-green-500 text-green-400"
+                    : answer === selectedAnswer
+                      ? "bg-red-500/20 border-red-500 text-red-400"
+                      : "border-gray-700 text-gray-300"
+                  : selectedAnswerIndex === idx
+                    ? "bg-slate-100 hover:bg-slate-100 text-dark hover:text-black"
+                    : "border-gray-700 hover:bg-gray-600"
+              }`}
           >
             {typeof answer === "string" ? (
               <span>{answer}</span>
@@ -256,6 +312,24 @@ export default function QuizComponent({
           </li>
         ))}
       </ul>
+
+      {studyMode &&
+        showAnswer &&
+        answeredQuestions.has(activeQuestion) &&
+        questions[activeQuestion].explanation && (
+          <div className="my-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-md">
+            <h4 className="font-bold mb-2 text-blue-400">Explanation:</h4>
+            {typeof questions[activeQuestion].explanation === "string" ? (
+              <p>{questions[activeQuestion].explanation}</p>
+            ) : (
+              <PortableText
+                value={questions[activeQuestion].explanation}
+                components={components}
+              />
+            )}
+          </div>
+        )}
+
       <div className="flex justify-between">
         <div>
           {activeQuestion > 0 && (

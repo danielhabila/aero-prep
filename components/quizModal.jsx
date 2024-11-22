@@ -11,6 +11,8 @@ export default function QuizModal({
   onStartQuiz,
   savedQuiz,
 }) {
+  const [studyMode, setStudyMode] = useState(false);
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -60,11 +62,32 @@ export default function QuizModal({
                   </Dialog.Title>
                 </div>
 
+                <div className="mb-6 flex justify-center">
+                  <div className="bg-gray-800 p-1 rounded-lg">
+                    <button
+                      className={`px-4 py-2 rounded-md transition-all ${
+                        !studyMode ? "bg-blue-500 text-white" : "text-gray-300"
+                      }`}
+                      onClick={() => setStudyMode(false)}
+                    >
+                      Exam Mode
+                    </button>
+                    <button
+                      className={`px-4 py-2 rounded-md transition-all ${
+                        studyMode ? "bg-green-500 text-white" : "text-gray-300"
+                      }`}
+                      onClick={() => setStudyMode(true)}
+                    >
+                      Study Mode
+                    </button>
+                  </div>
+                </div>
+
                 {selectedQuiz === "pstar" ? (
                   <button
                     onClick={() => {
                       setOpen(false);
-                      onStartQuiz("pstar");
+                      onStartQuiz("pstar", null, studyMode);
                     }}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-full md:w-4/6 mx-auto"
                   >
@@ -75,7 +98,7 @@ export default function QuizModal({
                     <button
                       onClick={() => {
                         setOpen(false);
-                        onStartQuiz("pplAirlawPtca");
+                        onStartQuiz("pplAirlawPtca", null, studyMode);
                       }}
                       className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-center"
                     >
@@ -84,7 +107,7 @@ export default function QuizModal({
                     <button
                       onClick={() => {
                         setOpen(false);
-                        onStartQuiz("pplMetPtca");
+                        onStartQuiz("pplMetPtca", null, studyMode);
                       }}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg text-center"
                     >
@@ -93,7 +116,7 @@ export default function QuizModal({
                     <button
                       onClick={() => {
                         setOpen(false);
-                        onStartQuiz("pplGenPtca");
+                        onStartQuiz("pplGenPtca", null, studyMode);
                       }}
                       className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg text-center"
                     >
@@ -102,7 +125,7 @@ export default function QuizModal({
                     <button
                       onClick={() => {
                         setOpen(false);
-                        onStartQuiz("pplNavPtca");
+                        onStartQuiz("pplNavPtca", null, studyMode);
                       }}
                       className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-lg text-center"
                     >
@@ -111,7 +134,7 @@ export default function QuizModal({
                     <button
                       onClick={() => {
                         setOpen(false);
-                        onStartQuiz("full");
+                        onStartQuiz("full", null, studyMode);
                       }}
                       className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center col-span-full"
                     >

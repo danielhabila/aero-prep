@@ -96,7 +96,11 @@ export default function SubscriptionsPage() {
     }
   }, [user, isLoading, router]);
 
-  const startQuiz = async (quizType, savedQuizData = null) => {
+  const startQuiz = async (
+    quizType,
+    savedQuizData = null,
+    studyMode = false
+  ) => {
     try {
       if (savedQuizData) {
         setQuizQuestions(savedQuizData.questions);
@@ -106,6 +110,7 @@ export default function SubscriptionsPage() {
           activeQuestion: savedQuizData.activeQuestion,
           results: savedQuizData.results,
           quizStartTime: savedQuizData.quizStartTime,
+          studyMode: studyMode,
         });
       } else {
         const count =
@@ -116,7 +121,7 @@ export default function SubscriptionsPage() {
         setQuizQuestions(response.data);
         setShowQuiz(true);
         setSelectedQuiz(quizType);
-        setInitialQuizState(null);
+        setInitialQuizState({ studyMode: studyMode });
       }
     } catch (error) {
       console.error("Error fetching quiz questions:", error);
@@ -174,6 +179,7 @@ export default function SubscriptionsPage() {
         title={getQuizTitle(selectedQuiz)}
         onExit={exitQuiz}
         initialState={initialQuizState}
+        studyMode={initialQuizState?.studyMode}
       />
     );
   }
@@ -253,9 +259,9 @@ export default function SubscriptionsPage() {
         setOpen={setOpen}
         selectedQuiz={selectedQuiz}
         savedQuiz={savedQuiz}
-        onStartQuiz={(quizType, resume) => {
+        onStartQuiz={(quizType, resume, studyMode) => {
           setSelectedQuiz(quizType);
-          startQuiz(quizType, resume);
+          startQuiz(quizType, resume, studyMode);
         }}
       />
     </div>
