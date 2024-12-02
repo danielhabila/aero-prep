@@ -16,6 +16,7 @@ const navigation = [
   { name: "Subscriptions", href: "/dashboard/subscriptions" },
   { name: "Stats", href: "/dashboard/stats" },
   { name: "Purchase", href: "/dashboard/purchase" },
+  { name: "Contact Us", href: "mailto:aeroprepteam@gmail.com" },
 ];
 
 export default function MobileNavigation() {

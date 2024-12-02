@@ -8,6 +8,7 @@ import {
   ChartBarIcon,
   ArrowLeftEndOnRectangleIcon,
   FolderPlusIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../public/images/prepMeWhite2.png";
 import ActiveSubscription from "./ActiveSubscription";
@@ -20,6 +21,11 @@ const navigation = [
   },
   { name: "Stats", href: "/dashboard/stats", icon: ChartBarIcon },
   { name: "Purchase", href: "/dashboard/purchase", icon: FolderPlusIcon },
+  {
+    name: "Contact Us",
+    href: "mailto:aeroprepteam@gmail.com",
+    icon: EnvelopeIcon,
+  },
 ];
 
 export default function SideNavigation() {

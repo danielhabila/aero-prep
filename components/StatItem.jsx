@@ -60,7 +60,6 @@ const components = {
 export default function StatItem({ quizResult }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
   const [aiExplanations, setAiExplanations] = useState({});
-  const [loadingQuestion, setLoadingQuestion] = useState(null);
 
   const transformedData = {
     results: {

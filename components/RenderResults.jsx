@@ -5,6 +5,7 @@ import passImage from "../public/images/pass.png";
 import failImage from "../public/images/fail.png";
 import { useState } from "react";
 import axios from "axios";
+import { SparklesIcon } from "@heroicons/react/24/solid";
 
 export default function RenderResults({
   results,
@@ -226,7 +227,10 @@ export default function RenderResults({
                         </svg>
                       </>
                     ) : (
-                      <>Get Explanation</>
+                      <div className="flex items-center gap-2">
+                        Get Explanation
+                        <SparklesIcon className="w-5 h-5" />
+                      </div>
                     )}
                   </button>
                 </div>

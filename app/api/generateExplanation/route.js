@@ -11,19 +11,19 @@ export async function POST(req) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
           content:
-            "You are an expert in Canadian aviation with extensive knowledge in PSTAR, PPL, and CPL exams. Provide detailed and accurate explanations with relevant Canadian aviation concepts, regulations, and best practices.",
+            "You are an expert in Canadian aviation with extensive knowledge in PSTAR, PPL, and CPL exams. Provide concise and accurate explanations with relevant Canadian aviation concepts, regulations, and best practices.",
         },
         {
           role: "user",
-          content: `Please explain this aviation question and its correct answer. Question: "${question}" Correct Answer: "${correctAnswer}"`,
+          content: `Please explain the answer to this question. Question: "${question}" Correct Answer: "${correctAnswer}"`,
         },
       ],
-      temperature: 0.7,
+      temperature: 0.4,
       max_tokens: 300,
     });
 

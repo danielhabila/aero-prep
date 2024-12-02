@@ -11,7 +11,7 @@ export default function QuizModal({
   onStartQuiz,
   savedQuiz,
 }) {
-  const [studyMode, setStudyMode] = useState(false);
+  const [studyMode, setStudyMode] = useState(true);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -65,20 +65,24 @@ export default function QuizModal({
                 <div className="mb-6 flex justify-center">
                   <div className="bg-gray-800 p-1 rounded-lg">
                     <button
-                      className={`px-4 py-2 rounded-md transition-all ${
-                        !studyMode ? "bg-blue-500 text-white" : "text-gray-300"
-                      }`}
-                      onClick={() => setStudyMode(false)}
-                    >
-                      Exam Mode
-                    </button>
-                    <button
-                      className={`px-4 py-2 rounded-md transition-all ${
-                        studyMode ? "bg-green-500 text-white" : "text-gray-300"
+                      className={`px-4 py-2 rounded-lg transition-all ${
+                        studyMode
+                          ? "bg-green-500 text-white font-medium"
+                          : "text-gray-300 font-medium"
                       }`}
                       onClick={() => setStudyMode(true)}
                     >
                       Study Mode
+                    </button>
+                    <button
+                      className={`px-4 py-2 rounded-lg transition-all ${
+                        !studyMode
+                          ? "bg-blue-500 text-white font-medium"
+                          : "text-gray-300 font-medium"
+                      }`}
+                      onClick={() => setStudyMode(false)}
+                    >
+                      Exam Mode
                     </button>
                   </div>
                 </div>
