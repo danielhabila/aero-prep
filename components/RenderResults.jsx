@@ -3,6 +3,8 @@ import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 import passImage from "../public/images/pass.png";
 import failImage from "../public/images/fail.png";
+import { useState } from "react";
+import axios from "axios";
 
 export default function RenderResults({
   results,
@@ -14,7 +16,12 @@ export default function RenderResults({
   onExit,
   fetchNewQuiz,
   isStats = false,
+  aiExplanations = {},
+  setAiExplanations,
 }) {
+  const [loadingExplanation, setLoadingExplanation] = useState(false);
+  const [loadingQuestion, setLoadingQuestion] = useState(null);
+
   const correctAnswersCount = results.answers.filter(
     (result) => result && result.selectedAnswer === result.correctAnswer
   ).length;
@@ -48,6 +55,28 @@ export default function RenderResults({
     if (activeQuestion < questions.length - 1) {
       setActiveQuestion((prev) => prev + 1);
       setTimeout(scrollToQuestion, 100);
+    }
+  };
+
+  const fetchExplanation = async (question, correctAnswer, questionIndex) => {
+    setLoadingQuestion(questionIndex);
+    try {
+      const response = await axios.post("/api/generateExplanation", {
+        question:
+          typeof question === "string"
+            ? question
+            : question[0]?.children[0]?.text,
+        correctAnswer,
+      });
+
+      setAiExplanations((prev) => ({
+        ...prev,
+        [questionIndex]: response.data.explanation,
+      }));
+    } catch (error) {
+      console.error("Error fetching explanation:", error);
+    } finally {
+      setLoadingQuestion(null);
     }
   };
 
@@ -155,6 +184,62 @@ export default function RenderResults({
                   value={questions[activeQuestion].explanation}
                   components={components}
                 />
+              )}
+            </div>
+          )}
+          {!questions[activeQuestion].explanation && (
+            <div className="mt-4 text-left">
+              {!aiExplanations[activeQuestion] && (
+                <div className="flex justify-center mt-12">
+                  <button
+                    onClick={() =>
+                      fetchExplanation(
+                        questions[activeQuestion].question,
+                        questions[activeQuestion].correctAnswer,
+                        activeQuestion
+                      )
+                    }
+                    disabled={loadingQuestion !== null}
+                    className="flex items-center gap-2 bg-blue-600   hover:bg-blue-700 disabled:bg-blue-600/50 
+                      text-white font-semibold px-6 py-2 rounded-full transition-colors duration-200"
+                  >
+                    {loadingQuestion === activeQuestion ? (
+                      <>
+                        Thinking...
+                        <svg
+                          className="animate-spin h-5 w-5 mr-2 text-white"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3.148 7.935l3.502-3.502z"
+                          />
+                        </svg>
+                      </>
+                    ) : (
+                      <>Get Explanation</>
+                    )}
+                  </button>
+                </div>
+              )}
+              {aiExplanations[activeQuestion] && (
+                <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-md">
+                  <h4 className="font-bold mb-2 text-blue-400">
+                    Generated Explanation:
+                  </h4>
+                  <p className="text-gray-200 whitespace-pre-wrap leading-relaxed">
+                    {aiExplanations[activeQuestion].replace(/\\n/g, "\n")}
+                  </p>
+                </div>
               )}
             </div>
           )}

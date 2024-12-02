@@ -4,7 +4,7 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const getPriceForDuration = (duration) => {
-  return duration === "12months" ? 100 : 60;
+  return duration === "12months" ? 59 : 39;
 };
 
 export async function POST(req) {
@@ -26,7 +26,9 @@ export async function POST(req) {
           price_data: {
             currency: "cad",
             product_data: {
-              name: "PPL Quiz Access",
+              name: `PPL Quiz ${
+                duration === "12months" ? "12 Months" : "6 Months"
+              } Access`,
             },
             unit_amount: price * 100, // Stripe expects the amount in cents
           },

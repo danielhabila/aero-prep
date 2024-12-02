@@ -98,6 +98,7 @@ export default function QuizComponent({
   const [answeredQuestions, setAnsweredQuestions] = useState(
     new Set(initialState?.answeredQuestions || [])
   );
+  const [aiExplanations, setAiExplanations] = useState({});
 
   // Update selected answer when active question changes
   useEffect(() => {
@@ -421,6 +422,11 @@ export default function QuizComponent({
     }
   };
 
+  const restartQuiz = async () => {
+    setAiExplanations({});
+    await fetchNewQuiz();
+  };
+
   return (
     <div className="min-h-[500px]">
       <div className="max-w-6xl px-4 sm:px-6 mx-auto flex justify-center py-10 flex-col">
@@ -453,6 +459,8 @@ export default function QuizComponent({
             components={components}
             onExit={onExit}
             fetchNewQuiz={fetchNewQuiz}
+            aiExplanations={aiExplanations}
+            setAiExplanations={setAiExplanations}
           />
         )}
       </div>

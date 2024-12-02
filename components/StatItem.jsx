@@ -59,6 +59,8 @@ const components = {
 
 export default function StatItem({ quizResult }) {
   const [activeQuestion, setActiveQuestion] = useState(0);
+  const [aiExplanations, setAiExplanations] = useState({});
+  const [loadingQuestion, setLoadingQuestion] = useState(null);
 
   const transformedData = {
     results: {
@@ -172,6 +174,8 @@ export default function StatItem({ quizResult }) {
               onExit={() => {}}
               fetchNewQuiz={() => {}}
               isStats={true}
+              aiExplanations={aiExplanations}
+              setAiExplanations={setAiExplanations}
             />
           </DisclosurePanel>
         </>
