@@ -150,7 +150,7 @@ export default function Pricing() {
   const isPplSubscribed = userSubscriptions.some((sub) => sub.type === "ppl");
 
   return (
-    <div id="pricing" className="py-16 sm:py-24">
+    <div className="py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           {/* <h2 className="text-base font-semibold leading-7 text-indigo-400">
@@ -166,7 +166,7 @@ export default function Pricing() {
           covers all key topics ensuring you’re fully equipped to succeed in no
           time.
         </p>
-        <div className="mt-16 flex justify-center">
+        <div id="pricingPstar" className="mt-12 flex justify-center pt-4">
           <fieldset aria-label="Payment frequency">
             <RadioGroup
               value={frequency}

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Hero = () => {
   const handleScroll = () => {
-    const pricingSection = document.getElementById("pricing");
+    const pricingSection = document.getElementById("pricingPstar");
     if (pricingSection) {
       pricingSection.scrollIntoView({ behavior: "smooth" });
     }
@@ -32,12 +32,18 @@ const Hero = () => {
               exam.
             </p>
           </div>
-          <div className="mt-6">
+          <div className="mt-6 flex justify-center gap-4">
             <button
               onClick={handleScroll}
               className="px-6 py-2 rounded-full inline-flex items-center bg-white text-black font-medium text-lg hover:bg-white/80 group"
             >
-              I'm ready
+              PSTAR
+            </button>
+            <button
+              onClick={handleScroll}
+              className="px-6 py-2 rounded-full inline-flex items-center bg-white text-black font-medium text-lg hover:bg-white/80 group"
+            >
+              PPL
             </button>
           </div>
         </div>
