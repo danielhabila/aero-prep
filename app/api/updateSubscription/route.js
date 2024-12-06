@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
-  const { email, quizType } = await req.json();
+  const { email, quizType, duration } = await req.json();
 
   try {
     const user = await prisma.user.findUnique({
@@ -25,21 +25,24 @@ export async function POST(req) {
       );
     }
 
+    const subscriptionData = {
+      type: quizType,
+      startDate: new Date().toISOString(),
+    };
+
+    if (quizType !== "pstar" && quizType !== "rocA") {
+      const months = duration === "12months" ? 12 : 6;
+      subscriptionData.duration = months;
+      subscriptionData.endDate = new Date(
+        new Date().setMonth(new Date().getMonth() + months)
+      ).toISOString();
+    }
+
     await prisma.user.update({
       where: { email },
       data: {
         subscriptions: {
-          push: {
-            type: quizType,
-            startDate: new Date().toISOString(),
-            duration: quizType === "pstar" ? null : 6,
-            endDate:
-              quizType === "pstar"
-                ? null
-                : new Date(
-                    new Date().setMonth(new Date().getMonth() + 6)
-                  ).toISOString(),
-          },
+          push: subscriptionData,
         },
       },
     });
