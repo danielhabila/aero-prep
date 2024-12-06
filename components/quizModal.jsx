@@ -58,7 +58,9 @@ export default function QuizModal({
                   >
                     {selectedQuiz === "pstar"
                       ? "PSTAR Quiz"
-                      : "PPL Quiz Options"}
+                      : selectedQuiz === "rocA"
+                        ? "ROC-A Quiz"
+                        : "PPL Quiz Options"}
                   </Dialog.Title>
                 </div>
 
@@ -96,6 +98,16 @@ export default function QuizModal({
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-full md:w-4/6 mx-auto"
                   >
                     Start PSTAR Quiz
+                  </button>
+                ) : selectedQuiz === "rocA" ? (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      onStartQuiz("rocA", null, studyMode);
+                    }}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-full md:w-4/6 mx-auto"
+                  >
+                    Start ROC-A Quiz
                   </button>
                 ) : (
                   <div className="flex flex-col gap-4 w-full md:w-4/6 mx-auto">

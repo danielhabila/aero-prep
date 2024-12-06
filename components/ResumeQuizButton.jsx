@@ -34,6 +34,8 @@ export default function ResumeQuizButton({ email, onResumeQuiz }) {
     switch (quizType) {
       case "pstar":
         return "PSTAR";
+      case "rocA":
+        return "ROC-A";
       case "pplAirlawPtca":
         return "PPL Airlaw";
       case "pplMetPtca":

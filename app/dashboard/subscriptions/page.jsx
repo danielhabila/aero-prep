@@ -114,7 +114,14 @@ export default function SubscriptionsPage() {
         });
       } else {
         const count =
-          quizType === "pstar" ? 50 : quizType === "full" ? 100 : 25;
+          quizType === "pstar"
+            ? 50
+            : quizType === "rocA"
+              ? 25
+              : quizType === "full"
+                ? 100
+                : 25;
+
         const response = await axios.get("/api/getQuizQuestions", {
           params: { type: quizType, count: count },
         });
@@ -156,6 +163,8 @@ export default function SubscriptionsPage() {
       switch (quizType) {
         case "pstar":
           return "PSTAR";
+        case "rocA":
+          return "ROC-A";
         case "pplAirlawPtca":
           return "PPL Airlaw";
         case "pplMetPtca":
@@ -210,50 +219,55 @@ export default function SubscriptionsPage() {
   }
 
   return (
-    <div className="w-full mx-auto flex flex-wrap justify-evenly items-stretch gap-8 px-4 py-8">
+    <div className="w-full mx-auto px-4 py-8">
       <ResumeQuizButton
         email={user.email}
         onResumeQuiz={(savedQuiz) => startQuiz(null, savedQuiz)}
       />
-      {subscriptions.map((subscription) => (
-        <div
-          key={subscription.type}
-          className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 max-w-sm"
-        >
-          <div className="h-full flex flex-col border border-gray-700 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-blue-500">
-            <div className="relative h-64">
-              <Image
-                className="w-full h-full"
-                src={
-                  subscription.type === "pstar"
-                    ? "https://images.unsplash.com/photo-1518228684816-9135c15ab4ea?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    : "https://images.unsplash.com/photo-1501821221140-a47f57e8940d?q=80&w=2500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                }
-                width={400}
-                height={300}
-                alt={`${subscription.type.toUpperCase()} Quiz`}
-              />
-            </div>
-            <div className="p-8 flex-grow flex flex-col justify-between">
-              <h3 className="font-bold text-2xl text-gray-100 mb-4">
-                {subscription.type.toUpperCase()} Quiz
-              </h3>
-              <p className="text-gray-400 text-md mb-6">
-                Test your knowledge on {subscription.type.toUpperCase()} topics.
-              </p>
-              <button
-                onClick={() => {
-                  setSelectedQuiz(subscription.type);
-                  setOpen(true);
-                }}
-                className="text-blue-500 hover:text-blue-400 font-semibold text-lg transition duration-300"
-              >
-                Start Quiz &rarr;
-              </button>
+      <div className="flex flex-col lg:flex-row justify-center items-center gap-4">
+        {subscriptions.map((subscription) => (
+          <div key={subscription.type} className="w-full max-w-sm">
+            <div className="h-full flex flex-col border border-gray-700 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-blue-500">
+              <div className="relative h-64">
+                <Image
+                  className="w-full h-full"
+                  src={
+                    subscription.type === "pstar"
+                      ? "https://images.unsplash.com/photo-1518228684816-9135c15ab4ea?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      : "https://images.unsplash.com/photo-1501821221140-a47f57e8940d?q=80&w=2500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  }
+                  width={400}
+                  height={300}
+                  alt={`${subscription.type.toUpperCase()} Quiz`}
+                />
+              </div>
+              <div className="p-8 flex-grow flex flex-col justify-between">
+                <h3 className="font-bold text-2xl text-gray-100 mb-4">
+                  {subscription.type === "rocA"
+                    ? "ROC-A Quiz"
+                    : `${subscription.type.toUpperCase()} Quiz`}
+                </h3>
+                <p className="text-gray-400 text-md mb-6">
+                  Test your knowledge on{" "}
+                  {subscription.type === "rocA"
+                    ? "ROC-A"
+                    : subscription.type.toUpperCase()}{" "}
+                  topics.
+                </p>
+                <button
+                  onClick={() => {
+                    setSelectedQuiz(subscription.type);
+                    setOpen(true);
+                  }}
+                  className="text-blue-500 hover:text-blue-400 font-semibold text-lg transition duration-300"
+                >
+                  Start Quiz &rarr;
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       <QuizModal
         open={open}
         setOpen={setOpen}

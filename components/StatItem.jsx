@@ -75,6 +75,8 @@ export default function StatItem({ quizResult }) {
     switch (examType) {
       case "PSTAR Exam":
         return "pstar";
+      case "ROC-A Exam":
+        return "rocA";
       case "PPL Airlaw Exam":
         return "pplAirlawPtca";
       case "PPL Meteorology Exam":

@@ -4,6 +4,7 @@ import pplAirlawPtca from "./schemas/pplAirlawPtca";
 import pplGenPtca from "./schemas/pplGenPtca";
 import pplMetPtca from "./schemas/pplMetPtca";
 import pplNavPtca from "./schemas/pplNavPtca";
+import rocA from "./schemas/rocA";
 import test from "./schemas/test";
 
 export const schema = {
@@ -14,6 +15,7 @@ export const schema = {
     pplNavPtca,
     pstar,
     pplAirlawPtca,
+    rocA,
     test,
   ],
 };

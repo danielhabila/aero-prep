@@ -43,6 +43,12 @@ const Hero = () => {
               onClick={handleScroll}
               className="px-6 py-2 rounded-full inline-flex items-center bg-white text-black font-medium text-lg hover:bg-white/80 group"
             >
+              ROC-A
+            </button>
+            <button
+              onClick={handleScroll}
+              className="px-6 py-2 rounded-full inline-flex items-center bg-white text-black font-medium text-lg hover:bg-white/80 group"
+            >
               PPL
             </button>
           </div>

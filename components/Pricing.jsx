@@ -30,6 +30,22 @@ const tiers = [
     mostPopular: false,
   },
   {
+    name: "ROC-A",
+    id: "rocA",
+    href: "#",
+    price: { "6months": "FREE", "12months": "FREE" },
+    description:
+      "Practice questions for the Restricted Operator Certificate with Aeronautical Qualification (ROC-A) exam, covering radio communication procedures and regulations.",
+    features: [
+      "100+ Questions",
+      "Progress Tracking & Stats",
+      "Study Mode available",
+      "Regular Updates",
+      "Explanations Provided",
+    ],
+    mostPopular: false,
+  },
+  {
     name: "PPL (PPAER)",
     id: "ppl",
     href: "#",
@@ -148,6 +164,7 @@ export default function Pricing() {
     (sub) => sub.type === "pstar"
   );
   const isPplSubscribed = userSubscriptions.some((sub) => sub.type === "ppl");
+  const isRocASubscribed = userSubscriptions.some((sub) => sub.type === "rocA");
 
   return (
     <div className="py-16 sm:py-24">
@@ -185,89 +202,102 @@ export default function Pricing() {
             </RadioGroup>
           </fieldset>
         </div>
-        <div className="mx-auto max-w-7xl lg:px-8 mt-10">
-          <div className="mx-auto grid max-w-md grid-cols-1 gap-8 lg:max-w-4xl lg:grid-cols-2">
+        <div className="mx-auto  mt-10">
+          <div className="flex flex-col lg:flex-row justify-center items-center lg:items-stretch gap-3">
             {tiers.map((tier) => (
               <div
                 key={tier.id}
-                className="ring-1 ring-white/10 rounded-3xl p-6 sm:p-8 xl:p-10  duration-300 hover:shadow-2xl hover:ring-blue-500 "
+                className="w-full max-w-sm ring-1 ring-white/10 rounded-3xl p-8 duration-300 hover:shadow-2xl hover:ring-blue-500 flex flex-col"
               >
-                <div className="flex items-center justify-between gap-x-4">
-                  <h3
-                    id={tier.id}
-                    className="text-lg font-semibold leading-8 text-white"
-                  >
-                    {tier.name}
-                  </h3>
-                </div>
-                <p className="mt-4 text-sm leading-6 text-gray-300">
-                  {tier.description}
-                </p>
-                <p className="mt-6 flex items-baseline gap-x-1">
-                  <span className="text-4xl font-bold tracking-tight text-white">
-                    {tier.price[frequency.value]}
-                  </span>
-                  {tier.price[frequency.value] !== "FREE" && (
-                    <span className="text-sm font-semibold leading-6 text-gray-300">
-                      {frequency.priceSuffix}
+                <div>
+                  <div className="flex items-center justify-between gap-x-4">
+                    <h3
+                      id={tier.id}
+                      className="text-lg font-semibold leading-8 text-white"
+                    >
+                      {tier.name}
+                    </h3>
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-gray-300 min-h-[96px]">
+                    {tier.description}
+                  </p>
+                  <p className="mt-6 flex items-baseline gap-x-1">
+                    <span className="text-4xl font-bold tracking-tight text-white">
+                      {tier.price[frequency.value]}
                     </span>
-                  )}
-                </p>
-                {tier.id === "pStar" ? (
-                  <button
-                    onClick={async () => {
-                      if (!user) {
-                        window.location.href =
-                          "/api/auth/login?returnTo=/dashboard/subscriptions";
-                        return;
-                      }
+                    {tier.price[frequency.value] !== "FREE" && (
+                      <span className="text-sm font-semibold leading-6 text-gray-300">
+                        {frequency.priceSuffix}
+                      </span>
+                    )}
+                  </p>
+                </div>
 
-                      try {
-                        const response = await axios.post(
-                          "/api/updateSubscription",
-                          {
-                            email: user.email,
-                            quizType: "pstar",
-                          }
-                        );
-
-                        if (
-                          response.status === 200 ||
-                          response.status === 409
-                        ) {
-                          window.location.href = "/dashboard/subscriptions";
+                {/* Button section */}
+                <div className="mt-6">
+                  {tier.id === "pStar" || tier.id === "rocA" ? (
+                    <button
+                      onClick={async () => {
+                        if (!user) {
+                          window.location.href =
+                            "/api/auth/login?returnTo=/dashboard/subscriptions";
+                          return;
                         }
-                      } catch (error) {
-                        console.error("Error updating subscription:", error);
+
+                        try {
+                          const response = await axios.post(
+                            "/api/updateSubscription",
+                            {
+                              email: user.email,
+                              quizType: tier.id === "pStar" ? "pstar" : "rocA",
+                            }
+                          );
+
+                          if (
+                            response.status === 200 ||
+                            response.status === 409
+                          ) {
+                            window.location.href = "/dashboard/subscriptions";
+                          }
+                        } catch (error) {
+                          console.error("Error updating subscription:", error);
+                        }
+                      }}
+                      className={classNames(
+                        (tier.id === "pStar" && isPstarSubscribed) ||
+                          (tier.id === "rocA" && isRocASubscribed)
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-white text-black hover:bg-white/80 focus-visible:outline-white",
+                        "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 w-full"
+                      )}
+                      disabled={
+                        (tier.id === "pStar" && isPstarSubscribed) ||
+                        (tier.id === "rocA" && isRocASubscribed)
                       }
-                    }}
-                    className={classNames(
-                      isPstarSubscribed
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-white text-black hover:bg-white/80 focus-visible:outline-white",
-                      "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 w-full"
-                    )}
-                    disabled={isPstarSubscribed}
-                  >
-                    {isPstarSubscribed
-                      ? "Subscribed"
-                      : user
-                        ? "Start"
-                        : "Login to Start"}
-                  </button>
-                ) : (
-                  <PurchaseButton
-                    price={parseFloat(
-                      tier.price[frequency.value].replace("$", "")
-                    )}
-                    disabled={isPplSubscribed}
-                    user={user}
-                    frequency={frequency.value}
-                  />
-                )}
+                    >
+                      {(tier.id === "pStar" && isPstarSubscribed) ||
+                      (tier.id === "rocA" && isRocASubscribed)
+                        ? "Subscribed"
+                        : user
+                          ? "Start"
+                          : "Login to Start"}
+                    </button>
+                  ) : (
+                    <PurchaseButton
+                      price={parseFloat(
+                        tier.price[frequency.value].replace("$", "")
+                      )}
+                      disabled={isPplSubscribed}
+                      user={user}
+                      frequency={frequency.value}
+                    />
+                  )}
+                </div>
+
+                {/* Features list */}
                 <ul
                   role="list"
-                  className="mt-8 space-y-3 text-sm leading-6 text-gray-300 xl:mt-10"
+                  className="mt-8 space-y-3 text-sm leading-6 text-gray-300"
                 >
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex gap-x-3">
