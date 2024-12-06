@@ -25,6 +25,7 @@ const navigation = [
     name: "Contact Us",
     href: "mailto:aeroprepteam@gmail.com",
     icon: EnvelopeIcon,
+    target: "_blank",
   },
 ];
 
@@ -42,17 +43,28 @@ export default function SideNavigation() {
         <ul>
           {navigation.map((item) => (
             <li key={item.name} className="my-3">
-              <Link
-                href={item.href}
-                className={`flex items-center p-2 rounded-lg ${
-                  pathname === item.href
-                    ? "bg-gray-700 text-white"
-                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
-                }`}
-              >
-                <item.icon className="h-6 w-6 mr-3" />
-                {item.name}
-              </Link>
+              {item.target ? (
+                <a
+                  href={item.href}
+                  target={item.target}
+                  className={`flex items-center p-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white`}
+                >
+                  <item.icon className="h-6 w-6 mr-3" />
+                  {item.name}
+                </a>
+              ) : (
+                <Link
+                  href={item.href}
+                  className={`flex items-center p-2 rounded-lg ${
+                    pathname === item.href
+                      ? "bg-gray-700 text-white"
+                      : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                  }`}
+                >
+                  <item.icon className="h-6 w-6 mr-3" />
+                  {item.name}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

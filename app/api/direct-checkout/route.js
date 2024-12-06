@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getSession } from "@auth0/nextjs-auth0";
 import { prisma } from "@/lib/prisma";
+import { PPL_PRICES } from "@/config/pricing";
 
 export const dynamic = "force-dynamic";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const getPriceForDuration = (duration) => {
-  return duration === "12months" ? 100 : 60;
+  return PPL_PRICES[duration];
 };
 
 export async function GET(req) {

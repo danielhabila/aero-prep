@@ -16,7 +16,11 @@ const navigation = [
   { name: "Subscriptions", href: "/dashboard/subscriptions" },
   { name: "Stats", href: "/dashboard/stats" },
   { name: "Purchase", href: "/dashboard/purchase" },
-  { name: "Contact Us", href: "mailto:aeroprepteam@gmail.com" },
+  {
+    name: "Contact Us",
+    href: "mailto:aeroprepteam@gmail.com",
+    target: "_blank",
+  },
 ];
 
 export default function MobileNavigation() {
@@ -81,13 +85,24 @@ export default function MobileNavigation() {
                         <ul role="list" className="-mx-2 space-y-1">
                           {navigation.map((item) => (
                             <li key={item.name}>
-                              <Link
-                                href={item.href}
-                                className="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                                onClick={() => setIsOpen(false)}
-                              >
-                                {item.name}
-                              </Link>
+                              {item.target ? (
+                                <a
+                                  href={item.href}
+                                  target={item.target}
+                                  className="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  {item.name}
+                                </a>
+                              ) : (
+                                <Link
+                                  href={item.href}
+                                  className="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  {item.name}
+                                </Link>
+                              )}
                             </li>
                           ))}
                         </ul>

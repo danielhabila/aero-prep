@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { PPL_PRICES } from "@/config/pricing";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const getPriceForDuration = (duration) => {
-  return duration === "12months" ? 59 : 39;
+  return PPL_PRICES[duration];
 };
 
 export async function POST(req) {
