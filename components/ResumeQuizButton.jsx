@@ -46,6 +46,8 @@ export default function ResumeQuizButton({ email, onResumeQuiz }) {
         return "PPL Navigation";
       case "full":
         return "PPL Complete";
+      case "inratMello":
+        return "INRAT";
       default:
         return quizType;
     }

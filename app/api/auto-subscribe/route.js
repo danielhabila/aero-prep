@@ -10,7 +10,7 @@ export async function GET(req) {
     }
 
     const quizType = req.nextUrl.searchParams.get("type");
-    if (!quizType || !["pstar", "rocA"].includes(quizType)) {
+    if (!quizType || !["pstar", "rocA", "inratMello"].includes(quizType)) {
       return NextResponse.redirect(
         new URL("/dashboard/subscriptions", req.url)
       );

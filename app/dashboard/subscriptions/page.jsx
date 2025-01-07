@@ -118,9 +118,11 @@ export default function SubscriptionsPage() {
             ? 50
             : quizType === "rocA"
               ? 25
-              : quizType === "full"
-                ? 100
-                : 25;
+              : quizType === "inratMello"
+                ? 50
+                : quizType === "full"
+                  ? 100
+                  : 25;
 
         const response = await axios.get("/api/getQuizQuestions", {
           params: { type: quizType, count: count },
@@ -247,13 +249,17 @@ export default function SubscriptionsPage() {
                 <h3 className="font-bold text-2xl text-gray-100 mb-4">
                   {subscription.type === "rocA"
                     ? "ROC-A Quiz"
-                    : `${subscription.type.toUpperCase()} Quiz`}
+                    : subscription.type === "inratMello"
+                      ? "INRAT Quiz"
+                      : `${subscription.type.toUpperCase()} Quiz`}
                 </h3>
                 <p className="text-gray-400 text-md mb-6">
                   Test your knowledge on{" "}
                   {subscription.type === "rocA"
                     ? "ROC-A"
-                    : subscription.type.toUpperCase()}{" "}
+                    : subscription.type === "inratMello"
+                      ? "INRAT"
+                      : subscription.type.toUpperCase()}{" "}
                   topics.
                 </p>
                 <button

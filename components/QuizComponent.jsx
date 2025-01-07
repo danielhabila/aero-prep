@@ -204,6 +204,8 @@ export default function QuizComponent({
             return "PPL Navigation Exam";
           case "full":
             return "PPL Complete Exam";
+          case "inratMello":
+            return "INRAT Exam";
           default:
             return `${quizType.charAt(0).toUpperCase() + quizType.slice(1)} Exam`;
         }
@@ -288,7 +290,7 @@ export default function QuizComponent({
           )}
         </h3>
       )}
-      <ul>
+      <ul className="mb-10">
         {questions[activeQuestion].answers.map((answer, idx) => (
           <li
             key={idx}

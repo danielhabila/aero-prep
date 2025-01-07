@@ -6,6 +6,7 @@ import pplMetPtca from "./schemas/pplMetPtca";
 import pplNavPtca from "./schemas/pplNavPtca";
 import rocA from "./schemas/rocA";
 import test from "./schemas/test";
+import inratMello from "./schemas/inratMello";
 
 export const schema = {
   types: [
@@ -17,5 +18,6 @@ export const schema = {
     pplAirlawPtca,
     rocA,
     test,
+    inratMello,
   ],
 };

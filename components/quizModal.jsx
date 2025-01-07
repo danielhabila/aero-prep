@@ -109,6 +109,16 @@ export default function QuizModal({
                   >
                     Start ROC-A Quiz
                   </button>
+                ) : selectedQuiz === "inratMello" ? (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      onStartQuiz("inratMello", null, studyMode);
+                    }}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-full md:w-4/6 mx-auto"
+                  >
+                    Start INRAT Quiz
+                  </button>
                 ) : (
                   <div className="flex flex-col gap-4 w-full md:w-4/6 mx-auto">
                     <button

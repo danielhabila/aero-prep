@@ -64,6 +64,22 @@ const tiers = [
     ],
     mostPopular: true,
   },
+  {
+    name: "INRAT",
+    id: "inratMello",
+    href: "#",
+    price: { "6months": "FREE", "12months": "FREE" },
+    description:
+      "Practice questions for the Instrument Rating Test (INRAT), covering instrument procedures, regulations, and flight planning.",
+    features: [
+      "100+ Questions",
+      "Progress Tracking & Stats",
+      "Study Mode available",
+      "Regular Updates",
+      "Explanations Provided",
+    ],
+    mostPopular: false,
+  },
 ];
 
 const stripePromise = loadStripe(
@@ -165,6 +181,9 @@ export default function Pricing() {
   );
   const isPplSubscribed = userSubscriptions.some((sub) => sub.type === "ppl");
   const isRocASubscribed = userSubscriptions.some((sub) => sub.type === "rocA");
+  const isInratSubscribed = userSubscriptions.some(
+    (sub) => sub.type === "inratMello"
+  );
 
   return (
     <div className="py-16 sm:py-24">
@@ -202,12 +221,12 @@ export default function Pricing() {
             </RadioGroup>
           </fieldset>
         </div>
-        <div className="mx-auto  mt-10">
-          <div className="flex flex-col lg:flex-row justify-center items-center lg:items-stretch gap-3">
+        <div className="mx-auto mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-center items-stretch gap-6 max-w-5xl mx-auto px-4">
             {tiers.map((tier) => (
               <div
                 key={tier.id}
-                className="w-full max-w-sm ring-1 ring-white/10 rounded-3xl p-8 duration-300 hover:shadow-2xl hover:ring-blue-500 flex flex-col"
+                className="w-full max-w-sm mx-auto ring-1 ring-white/10 rounded-3xl p-6 duration-300 hover:shadow-2xl hover:ring-blue-500 flex flex-col"
               >
                 <div>
                   <div className="flex items-center justify-between gap-x-4">
@@ -235,7 +254,9 @@ export default function Pricing() {
 
                 {/* Button section */}
                 <div className="mt-6">
-                  {tier.id === "pStar" || tier.id === "rocA" ? (
+                  {tier.id === "pStar" ||
+                  tier.id === "rocA" ||
+                  tier.id === "inratMello" ? (
                     <button
                       onClick={async () => {
                         if (!user) {
@@ -249,7 +270,12 @@ export default function Pricing() {
                             "/api/updateSubscription",
                             {
                               email: user.email,
-                              quizType: tier.id === "pStar" ? "pstar" : "rocA",
+                              quizType:
+                                tier.id === "pStar"
+                                  ? "pstar"
+                                  : tier.id === "rocA"
+                                    ? "rocA"
+                                    : "inratMello",
                             }
                           );
 
@@ -265,18 +291,21 @@ export default function Pricing() {
                       }}
                       className={classNames(
                         (tier.id === "pStar" && isPstarSubscribed) ||
-                          (tier.id === "rocA" && isRocASubscribed)
+                          (tier.id === "rocA" && isRocASubscribed) ||
+                          (tier.id === "inratMello" && isInratSubscribed)
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                           : "bg-white text-black hover:bg-white/80 focus-visible:outline-white",
                         "mt-6 block rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 w-full"
                       )}
                       disabled={
                         (tier.id === "pStar" && isPstarSubscribed) ||
-                        (tier.id === "rocA" && isRocASubscribed)
+                        (tier.id === "rocA" && isRocASubscribed) ||
+                        (tier.id === "inratMello" && isInratSubscribed)
                       }
                     >
                       {(tier.id === "pStar" && isPstarSubscribed) ||
-                      (tier.id === "rocA" && isRocASubscribed)
+                      (tier.id === "rocA" && isRocASubscribed) ||
+                      (tier.id === "inratMello" && isInratSubscribed)
                         ? "Subscribed"
                         : user
                           ? "Start"
