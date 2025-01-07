@@ -177,6 +177,8 @@ export default function SubscriptionsPage() {
           return "PPL Navigation";
         case "full":
           return "PPL Complete Exam";
+        case "inratMello":
+          return "INRAT";
         default:
           return `${quizType.charAt(0).toUpperCase() + quizType.slice(1)} Quiz`;
       }

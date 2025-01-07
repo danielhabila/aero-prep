@@ -175,7 +175,11 @@ export default function RenderResults({
               </li>
             ))}
           </ul>
-          {questions[activeQuestion].explanation && (
+          {questions[activeQuestion].explanation &&
+          ((typeof questions[activeQuestion].explanation === "string" &&
+            questions[activeQuestion].explanation.trim() !== "") ||
+            (Array.isArray(questions[activeQuestion].explanation) &&
+              questions[activeQuestion].explanation.length > 0)) ? (
             <div className="mt-4 text-left">
               <h4 className="font-bold mb-2">Explanation:</h4>
               {typeof questions[activeQuestion].explanation === "string" ? (
@@ -187,7 +191,7 @@ export default function RenderResults({
                 />
               )}
             </div>
-          )}
+          ) : null}
           {!questions[activeQuestion].explanation && (
             <div className="mt-4 text-left">
               {!aiExplanations[activeQuestion] && (

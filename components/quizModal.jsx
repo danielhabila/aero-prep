@@ -60,7 +60,9 @@ export default function QuizModal({
                       ? "PSTAR Quiz"
                       : selectedQuiz === "rocA"
                         ? "ROC-A Quiz"
-                        : "PPL Quiz Options"}
+                        : selectedQuiz === "inratMello"
+                          ? "INRAT Quiz"
+                          : "PPL Quiz Options"}
                   </Dialog.Title>
                 </div>
 
