@@ -501,6 +501,7 @@ export default function QuizComponent({
             ? question
             : question[0]?.children[0]?.text,
         correctAnswer,
+        quizType,
       });
 
       setAiExplanations((prev) => ({

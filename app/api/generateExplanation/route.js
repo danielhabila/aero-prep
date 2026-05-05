@@ -5,25 +5,34 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const SYSTEM_PROMPTS = {
+  ncaaAirlaw:
+    "You are an aviation expert specializing in Nigerian Civil Aviation Authority (NCAA) regulations. Base your explanations on Nigerian Civil Aviation Regulations (NCARs), NCAA policies, and ICAO Annexes as they apply in Nigeria. Do not reference Transport Canada or Canadian regulations. Provide concise and accurate explanations.",
+  default:
+    "You are an expert in Canadian aviation with extensive knowledge in PSTAR, PPL, ROC-A, and INRAT exams. Provide concise and accurate explanations with relevant Canadian aviation concepts, regulations, and Transport Canada standards.",
+};
+
 export async function POST(req) {
   const body = await req.json();
-  const { question, correctAnswer } = body;
+  const { question, correctAnswer, quizType } = body;
+
+  const systemPrompt = SYSTEM_PROMPTS[quizType] ?? SYSTEM_PROMPTS.default;
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-mini",
       messages: [
         {
           role: "system",
-          content:
-            "You are an expert in Canadian aviation with extensive knowledge in PSTAR, PPL, and CPL exams. Provide concise and accurate explanations with relevant Canadian aviation concepts, regulations, and best practices.",
+          content: systemPrompt,
         },
         {
           role: "user",
           content: `Please explain the answer to this question. Question: "${question}" Correct Answer: "${correctAnswer}"`,
         },
       ],
-      max_tokens: 300,
+      reasoning_effort: "minimal",
+      max_completion_tokens: 300,
     });
 
     return NextResponse.json(
