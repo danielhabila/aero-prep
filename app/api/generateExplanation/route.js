@@ -40,10 +40,12 @@ export async function POST(req) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("OpenAI API error:", error);
+    const message = error?.message ?? String(error);
+    const status = error?.status ?? 500;
+    console.error("OpenAI API error:", message);
     return NextResponse.json(
-      { error: "Failed to generate explanation" },
-      { status: 500 }
+      { error: message },
+      { status }
     );
   }
 }
