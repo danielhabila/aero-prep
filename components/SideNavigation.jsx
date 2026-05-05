@@ -7,11 +7,9 @@ import {
   RectangleStackIcon,
   ChartBarIcon,
   ArrowLeftEndOnRectangleIcon,
-  FolderPlusIcon,
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../public/images/prepMeWhite2.png";
-import ActiveSubscription from "./ActiveSubscription";
 
 const navigation = [
   {
@@ -20,7 +18,6 @@ const navigation = [
     icon: RectangleStackIcon,
   },
   { name: "Stats", href: "/dashboard/stats", icon: ChartBarIcon },
-  { name: "Purchase", href: "/dashboard/purchase", icon: FolderPlusIcon },
   {
     name: "Contact Us",
     href: "mailto:aeroprepteam@gmail.com",
@@ -69,11 +66,9 @@ export default function SideNavigation() {
           ))}
         </ul>
 
-        <ActiveSubscription />
-
         <div>
           <a
-            href="/api/auth/logout"
+            href="/api/logout"
             className="flex items-center p-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-red-400"
           >
             <ArrowLeftEndOnRectangleIcon className="h-6 w-6 mr-3" />

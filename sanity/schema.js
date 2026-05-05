@@ -7,6 +7,7 @@ import pplNavPtca from "./schemas/pplNavPtca";
 import rocA from "./schemas/rocA";
 import test from "./schemas/test";
 import inratMello from "./schemas/inratMello";
+import ncaaAirlaw from "./schemas/ncaaAirlaw";
 
 export const schema = {
   types: [
@@ -19,5 +20,6 @@ export const schema = {
     rocA,
     test,
     inratMello,
+    ncaaAirlaw,
   ],
 };

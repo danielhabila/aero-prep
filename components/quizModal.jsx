@@ -62,7 +62,9 @@ export default function QuizModal({
                         ? "ROC-A Quiz"
                         : selectedQuiz === "inratMello"
                           ? "INRAT Quiz"
-                          : "PPL Quiz Options"}
+                          : selectedQuiz === "ncaaAirlaw"
+                            ? "NCAA Airlaw Quiz"
+                            : "PPL Quiz Options"}
                   </Dialog.Title>
                 </div>
 
@@ -120,6 +122,16 @@ export default function QuizModal({
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-full md:w-4/6 mx-auto"
                   >
                     Start INRAT Quiz
+                  </button>
+                ) : selectedQuiz === "ncaaAirlaw" ? (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      onStartQuiz("ncaaAirlaw", null, studyMode);
+                    }}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center w-full md:w-4/6 mx-auto"
+                  >
+                    Start NCAA Airlaw Quiz
                   </button>
                 ) : (
                   <div className="flex flex-col gap-4 w-full md:w-4/6 mx-auto">

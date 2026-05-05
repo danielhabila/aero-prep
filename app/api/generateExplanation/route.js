@@ -11,7 +11,7 @@ export async function POST(req) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-mini",
       messages: [
         {
           role: "system",
@@ -23,8 +23,8 @@ export async function POST(req) {
           content: `Please explain the answer to this question. Question: "${question}" Correct Answer: "${correctAnswer}"`,
         },
       ],
-      temperature: 0.4,
-      max_tokens: 300,
+      reasoning_effort: "minimal",
+      max_completion_tokens: 300,
     });
 
     return NextResponse.json(

@@ -4,34 +4,37 @@ import { useState, useEffect } from "react";
 import StatItem from "@/components/StatItem.jsx";
 import axios from "axios";
 import Loader from "@/components/Loader.jsx";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
 
 export default function StatList() {
-  const { user } = useUser();
+  const [email, setEmail] = useState(null);
   const [quizResults, setQuizResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      const fetchQuizResults = async () => {
-        try {
-          const response = await axios.get("/api/quizResults", {
-            params: { email: user.email },
-          });
-          setQuizResults(response.data);
+    const load = async () => {
+      try {
+        const me = await axios.get("/api/me");
+        const userEmail = me.data.email;
+        setEmail(userEmail);
+        if (!userEmail) {
           setIsLoading(false);
-        } catch (error) {
-          console.log(error);
-          setError(error);
-          setIsLoading(false);
+          return;
         }
-      };
-
-      fetchQuizResults();
-    }
-  }, [user]);
+        const response = await axios.get("/api/quizResults", {
+          params: { email: userEmail },
+        });
+        setQuizResults(response.data);
+      } catch (err) {
+        console.log(err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   if (error) {
     return (
@@ -52,7 +55,7 @@ export default function StatList() {
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">No Quiz Results Found</h2>
             <p className="mb-6">
-              You haven't taken any quizzes yet. Start your first quiz now!
+              You haven&apos;t taken any quizzes yet. Start your first quiz now!
             </p>
             <Link
               href="/dashboard/subscriptions"

@@ -3,42 +3,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../public/images/prepMeWhite2.png";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const Navbar = () => {
-  const { user, isLoading } = useUser();
   const pathname = usePathname();
+  const [email, setEmail] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const handleCheckUserDB = async () => {
-      try {
-        const response = await axios.post("/api/checkUser", {
-          username: user.nickname,
-          email: user.email,
-        });
-
-        if (response.status === 200) {
-          // alert("Welcome back");
-        } else if (response.status === 201) {
-          // alert("Welcome new user");
-        } else if (response.status === 500) {
-          alert("Something went wrong server side, please report issue.");
-        } else {
-          throw new Error(response.data.message || "Login failed");
+    let cancelled = false;
+    fetch("/api/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled) {
+          setEmail(data.email);
+          setLoaded(true);
         }
-      } catch (error) {
-        alert("Something went wrong, please report issue.");
-        console.log(error.message);
-      }
+      })
+      .catch(() => setLoaded(true));
+    return () => {
+      cancelled = true;
     };
-
-    if (user && !isLoading) {
-      handleCheckUserDB();
-    }
-  }, [user, isLoading]);
+  }, []);
 
   return (
     <header
@@ -53,7 +40,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-3 justify-end">
-            {user && (
+            {email && (
               <Link
                 className="text-white font-semibold mr-2 hover:underline"
                 href="/dashboard"
@@ -61,34 +48,27 @@ const Navbar = () => {
                 Dashboard
               </Link>
             )}
-            {/* <UserButton /> */}
 
             <ul className="flex grow justify-end flex-wrap items-center">
               <li>
-                {!user ? (
-                  <a
+                {loaded && !email ? (
+                  <Link
                     className="rounded-full px-4 py-1 inline-flex items-center bg-white font-medium hover:bg-white/80 group text-black"
-                    href={
-                      window.location.pathname === "/"
-                        ? `/dashboard`
-                        : `/api/auth/login?returnTo=${encodeURIComponent(
-                            window.location.pathname
-                          )}`
-                    }
+                    href="/login"
                   >
                     Login{" "}
                     <span className="tracking-normal text-blue-950 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">
                       -&gt;
                     </span>
-                  </a>
-                ) : (
+                  </Link>
+                ) : email ? (
                   <a
                     className="px-4 py-1 rounded-full inline-flex items-center text-black font-medium bg-white hover:bg-white/80 group"
-                    href="/api/auth/logout"
+                    href="/api/logout"
                   >
-                    Logout!
+                    Logout
                   </a>
-                )}
+                ) : null}
               </li>
             </ul>
           </div>

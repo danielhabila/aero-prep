@@ -1,13 +1,12 @@
-import { getSession } from "@auth0/nextjs-auth0";
 import SideNavigation from "@/components/SideNavigation";
-import { redirect } from "next/navigation";
 import DashboardHeader from "@/components/DashboardHeader";
+import { getCurrentUserEmail } from "@/lib/session";
+import { redirect } from "next/navigation";
 
-export default async function DashboardLayout({ children }) {
-  const session = await getSession();
-
-  if (!session) {
-    redirect("/api/auth/login");
+export default function DashboardLayout({ children }) {
+  const email = getCurrentUserEmail();
+  if (!email) {
+    redirect("/login");
   }
 
   return (
@@ -17,7 +16,7 @@ export default async function DashboardLayout({ children }) {
       </div>
 
       <main className="flex-1 overflow-y-auto">
-        <DashboardHeader />
+        <DashboardHeader email={email} />
         <div className="py-4">{children}</div>
       </main>
     </div>

@@ -206,6 +206,8 @@ export default function QuizComponent({
             return "PPL Complete Exam";
           case "inratMello":
             return "INRAT Exam";
+          case "ncaaAirlaw":
+            return "NCAA Airlaw Exam";
           default:
             return `${quizType.charAt(0).toUpperCase() + quizType.slice(1)} Exam`;
         }

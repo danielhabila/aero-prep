@@ -1,6 +1,5 @@
 import { Raleway } from "next/font/google";
 import "./globals.css";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
 import LayoutProvider from "./providers/LayoutProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
@@ -26,19 +25,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <UserProvider>
-      <html lang="en">
-        <body
-          suppressHydrationWarning
-          className={`${raleway.className} min-h-screen flex flexCol justify-between`}
-        >
-          <LayoutProvider>
-            {children}
-            <SpeedInsights />
-            <Analytics />
-          </LayoutProvider>
-        </body>
-      </html>
-    </UserProvider>
+    <html lang="en">
+      <body
+        suppressHydrationWarning
+        className={`${raleway.className} min-h-screen flex flexCol justify-between`}
+      >
+        <LayoutProvider>
+          {children}
+          <SpeedInsights />
+          <Analytics />
+        </LayoutProvider>
+      </body>
+    </html>
   );
 }
