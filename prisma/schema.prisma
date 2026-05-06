@@ -13,5 +13,5 @@ model User {
   username      String
   subscriptions Json[] @default([])
   quizResults   Json[] @default([])
-  quizProgress  Json?
+  quizSaves     Json[] @default([])
 }

@@ -31,8 +31,8 @@ export async function POST(req) {
           content: `Please explain the answer to this question. Question: "${question}" Correct Answer: "${correctAnswer}"`,
         },
       ],
-      reasoning_effort: "minimal",
-      max_completion_tokens: 300,
+      reasoning_effort: "medium",
+      max_completion_tokens: 800,
     });
 
     return NextResponse.json(

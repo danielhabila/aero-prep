@@ -58,7 +58,9 @@ export default function SubscriptionsPage() {
           activeQuestion: savedQuizData.activeQuestion,
           results: savedQuizData.results,
           quizStartTime: savedQuizData.quizStartTime,
-          studyMode: studyMode,
+          studyMode: savedQuizData.studyMode ?? false,
+          answeredQuestions: savedQuizData.answeredQuestions ?? [],
+          saveId: savedQuizData.id,
         });
       } else {
         const count =

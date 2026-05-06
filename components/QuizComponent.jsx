@@ -78,6 +78,7 @@ export default function QuizComponent({
 }) {
   const [questions, setQuestions] = useState(initialQuestions);
   // State management
+  const [saveId] = useState(initialState?.saveId ?? null);
   const [activeQuestion, setActiveQuestion] = useState(
     initialState?.activeQuestion || 0
   );
@@ -256,6 +257,15 @@ export default function QuizComponent({
     }
   };
   const goToQuestion = (index) => setActiveQuestion(index);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowRight") nextQuestion();
+      if (e.key === "ArrowLeft") previousQuestion();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeQuestion, questions.length, studyMode]);
 
   // Render functions
   const renderQuestionNavigation = () => (
@@ -459,6 +469,9 @@ export default function QuizComponent({
         questions,
         results,
         quizStartTime,
+        studyMode: studyMode ?? false,
+        answeredQuestions: [...answeredQuestions],
+        saveId,
       });
       onExit();
     } catch (error) {
