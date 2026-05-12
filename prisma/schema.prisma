@@ -15,3 +15,15 @@ model User {
   quizResults   Json[] @default([])
   quizSaves     Json[] @default([])
 }
+
+model QuestionHistory {
+  id         String   @id @default(cuid()) @map("_id")
+  email      String
+  quizType   String
+  questionId String
+  wasCorrect Boolean
+  answeredAt DateTime @default(now())
+
+  @@unique([email, quizType, questionId])
+  @@index([email, quizType, wasCorrect])
+}

@@ -235,6 +235,22 @@ export default function QuizComponent({
         email,
       });
 
+      // Record per-question outcomes for the question-mix picker
+      const outcomes = questions
+        .map((q, index) => {
+          if (!q._id) return null;
+          const selected = results.answers[index]?.selectedAnswer || null;
+          return {
+            questionId: q._id,
+            wasCorrect: selected === q.correctAnswer,
+          };
+        })
+        .filter(Boolean);
+
+      if (outcomes.length > 0) {
+        await axios.post("/api/quizHistory", { email, quizType, outcomes });
+      }
+
       // Delete saved progress
       await axios.delete("/api/quizProgress", {
         params: { email },
@@ -485,7 +501,7 @@ export default function QuizComponent({
     try {
       const count = quizType === "pstar" ? 50 : quizType === "full" ? 100 : 25;
       const response = await axios.get("/api/getQuizQuestions", {
-        params: { type: quizType, count: count },
+        params: { type: quizType, count: count, email },
       });
       setQuestions(response.data);
       setActiveQuestion(0);

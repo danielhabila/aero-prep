@@ -77,7 +77,7 @@ export default function SubscriptionsPage() {
                     : 25;
 
         const response = await axios.get("/api/getQuizQuestions", {
-          params: { type: quizType, count: count },
+          params: { type: quizType, count: count, email },
         });
         if (!Array.isArray(response.data) || response.data.length === 0) {
           alert(
